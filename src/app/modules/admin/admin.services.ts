@@ -1,13 +1,13 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { adminSearchableFields } from "./admin.constants";
+import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
+import { TOptions } from "../../types/global.types";
+import prisma from "../../utils/prisma";
 
-const prisma = new PrismaClient();
-
-const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<string, any>) => {
+const getAllAdminsFromDB = async (query: Record<string, any>, options: TOptions) => {
     const filterConditions: Prisma.AdminWhereInput[] = [];
     const { searchTerm, ...restFilterConditions } = query;
-    const { limit, page } = options;
-    console.log(options);
+    const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options);
 
     // search on multiple fields globally
     if (searchTerm) {
@@ -35,8 +35,11 @@ const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<st
     const whereConditions: Prisma.AdminWhereInput = filterConditions.length ? { AND: filterConditions } : {};
     const res = await prisma.admin.findMany({
         where: whereConditions,
-        skip: ((Number(page) - 1) * Number(limit)) || 0,
-        take: Number(limit) || 10
+        skip,
+        take: limit,
+        orderBy: {
+            [sortBy]: sortOrder
+        }
     });
     return res;
 };
