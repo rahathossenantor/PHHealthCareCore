@@ -5,7 +5,6 @@ const pick = <T extends Record<string, unknown>, K extends keyof T>(query: T, fi
             picked[field] = query[field];
         };
     };
-    console.log(picked);
     return picked;
 };
 
