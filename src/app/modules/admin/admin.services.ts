@@ -4,10 +4,10 @@ import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 import { TOptions } from "../../types/global.types";
 import prisma from "../../utils/prisma";
 
-const getAllAdminsFromDB = async (query: Record<string, any>, options: TOptions) => {
+const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<string, any>) => {
     const filterConditions: Prisma.AdminWhereInput[] = [];
     const { searchTerm, ...restFilterConditions } = query;
-    const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options);
+    const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options as TOptions);
 
     // search on multiple fields globally
     if (searchTerm) {
@@ -41,7 +41,18 @@ const getAllAdminsFromDB = async (query: Record<string, any>, options: TOptions)
             [sortBy]: sortOrder
         }
     });
-    return res;
+    const total = await prisma.admin.count({
+        where: whereConditions
+    });
+
+    return {
+        meta: {
+            page,
+            limit,
+            total
+        },
+        data: res
+    };
 };
 
 const adminServices = {

@@ -8,11 +8,12 @@ const getAllAdmins = async (req: Request, res: Response) => {
     const options = pick(req.query, adminOptions);
 
     try {
-        const admins = await adminServices.getAllAdminsFromDB(query, options);
+        const response = await adminServices.getAllAdminsFromDB(query, options);
         return res.status(200).json({
             success: true,
             message: "Admins fetched successfully.",
-            data: admins
+            meta: response.meta,
+            data: response.data
         });
     } catch (err: any) {
         return res.status(200).json({
