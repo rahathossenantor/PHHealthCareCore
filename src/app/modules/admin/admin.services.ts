@@ -1,4 +1,4 @@
-import { Admin, Prisma } from "@prisma/client";
+import { Admin, Prisma, UserStatus } from "@prisma/client";
 import { adminSearchableFields } from "./admin.constants";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 import { TOptions } from "../../types/global.types";
@@ -70,7 +70,7 @@ const updateAdminIntoDB = async (id: string, payload: Partial<Admin>) => {
             id
         }
     });
-    
+
     const res = await prisma.admin.update({
         where: {
             id
@@ -80,6 +80,29 @@ const updateAdminIntoDB = async (id: string, payload: Partial<Admin>) => {
     return res;
 };
 
+// const deleteAdminFromDB = async (id: string) => {
+//     await prisma.admin.findUniqueOrThrow({
+//         where: {
+//             id
+//         }
+//     });
+
+//     const res = await prisma.$transaction(async (transactionClient) => {
+//         const admin = await transactionClient.admin.delete({
+//             where: {
+//                 id
+//             }
+//         });
+//         await transactionClient.user.delete({
+//             where: {
+//                 email: admin.email
+//             }
+//         });
+//         return admin;
+//     });
+//     return res;
+// };
+
 const deleteAdminFromDB = async (id: string) => {
     await prisma.admin.findUniqueOrThrow({
         where: {
@@ -88,14 +111,20 @@ const deleteAdminFromDB = async (id: string) => {
     });
 
     const res = await prisma.$transaction(async (transactionClient) => {
-        const admin = await transactionClient.admin.delete({
+        const admin = await transactionClient.admin.update({
             where: {
                 id
+            },
+            data: {
+                isDeleted: true
             }
         });
-        await transactionClient.user.delete({
+        await transactionClient.user.update({
             where: {
                 email: admin.email
+            },
+            data: {
+                status: UserStatus.DELETED
             }
         });
         return admin;
