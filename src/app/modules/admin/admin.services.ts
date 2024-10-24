@@ -4,8 +4,17 @@ import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 import { TOptions } from "../../types/global.types";
 import prisma from "../../utils/prisma";
 
-const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<string, any>) => {
-    const filterConditions: Prisma.AdminWhereInput[] = [];
+const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<string, any>): Promise<{
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+    };
+    data: Admin[];
+}> => {
+    const filterConditions: Prisma.AdminWhereInput[] = [{
+        isDeleted: false
+    }];
     const { searchTerm, ...restFilterConditions } = query;
     const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options as TOptions);
 
@@ -55,19 +64,21 @@ const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<st
     };
 };
 
-const getSingleAdminFromDB = async (id: string) => {
+const getSingleAdminFromDB = async (id: string): Promise<Admin | null> => {
     const admin = await prisma.admin.findUnique({
         where: {
-            id
+            id,
+            isDeleted: false
         }
     });
     return admin;
 };
 
-const updateAdminIntoDB = async (id: string, payload: Partial<Admin>) => {
+const updateAdminIntoDB = async (id: string, payload: Partial<Admin>): Promise<Admin> => {
     await prisma.admin.findUniqueOrThrow({
         where: {
-            id
+            id,
+            isDeleted: false
         }
     });
 
@@ -84,6 +95,7 @@ const updateAdminIntoDB = async (id: string, payload: Partial<Admin>) => {
 //     await prisma.admin.findUniqueOrThrow({
 //         where: {
 //             id
+//             isDeleted: false
 //         }
 //     });
 
@@ -103,10 +115,11 @@ const updateAdminIntoDB = async (id: string, payload: Partial<Admin>) => {
 //     return res;
 // };
 
-const deleteAdminFromDB = async (id: string) => {
+const deleteAdminFromDB = async (id: string): Promise<Admin> => {
     await prisma.admin.findUniqueOrThrow({
         where: {
-            id
+            id,
+            isDeleted: false
         }
     });
 
