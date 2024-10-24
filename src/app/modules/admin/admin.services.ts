@@ -65,6 +65,12 @@ const getSingleAdminFromDB = async (id: string) => {
 };
 
 const updateAdminIntoDB = async (id: string, payload: Partial<Admin>) => {
+    await prisma.admin.findUniqueOrThrow({
+        where: {
+            id
+        }
+    });
+    
     const res = await prisma.admin.update({
         where: {
             id
@@ -74,10 +80,34 @@ const updateAdminIntoDB = async (id: string, payload: Partial<Admin>) => {
     return res;
 };
 
+const deleteAdminFromDB = async (id: string) => {
+    await prisma.admin.findUniqueOrThrow({
+        where: {
+            id
+        }
+    });
+
+    const res = await prisma.$transaction(async (transactionClient) => {
+        const admin = await transactionClient.admin.delete({
+            where: {
+                id
+            }
+        });
+        await transactionClient.user.delete({
+            where: {
+                email: admin.email
+            }
+        });
+        return admin;
+    });
+    return res;
+};
+
 const adminServices = {
     getAllAdminsFromDB,
     getSingleAdminFromDB,
-    updateAdminIntoDB
+    updateAdminIntoDB,
+    deleteAdminFromDB
 };
 
 export default adminServices;

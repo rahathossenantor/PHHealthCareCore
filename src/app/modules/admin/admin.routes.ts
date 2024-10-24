@@ -12,6 +12,9 @@ router.get("/:id",
 router.patch("/:id",
     adminControllers.updateAdmin
 );
+router.delete("/:id",
+    adminControllers.deleteAdmin
+);
 
 const adminRoutes = router;
 
