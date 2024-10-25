@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import userServices from "./user.services";
 import sendResponse from "../../utils/sendResponse";
+import httpStatus from "http-status";
 
 const createAdmin = async (req: Request, res: Response) => {
     try {
         const admin = await userServices.createAdminIntoDB(req.body);
         sendResponse(res, {
-            statusCode: 200,
+            statusCode: httpStatus.OK,
             success: true,
             message: "Admin created successfully.",
             data: admin

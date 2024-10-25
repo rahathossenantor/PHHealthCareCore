@@ -17,6 +17,7 @@
     "bcrypt": "^5.1.1",
     "@prisma/client": "^5.21.0",
     "cors": "^2.8.5",
+    "http-status": "^1.7.4",
     "express": "^4.18.2"
   },
   "devDependencies": {
