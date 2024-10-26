@@ -3,7 +3,8 @@ import userControllers from "./user.controllers";
 
 const router = Router();
 
-router.post("/create-admin",
+router.post(
+    "/create-admin",
     userControllers.createAdmin
 );
 

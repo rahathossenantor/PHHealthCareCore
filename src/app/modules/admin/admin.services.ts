@@ -1,15 +1,11 @@
 import { Admin, Prisma, UserStatus } from "@prisma/client";
 import { adminSearchableFields } from "./admin.constants";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
-import { TOptions } from "../../types/global.types";
+import { TMeta, TOptions } from "../../types/global.types";
 import prisma from "../../utils/prisma";
 
 const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<string, any>): Promise<{
-    meta: {
-        page: number;
-        limit: number;
-        total: number;
-    };
+    meta: TMeta;
     data: Admin[];
 }> => {
     const filterConditions: Prisma.AdminWhereInput[] = [{
@@ -65,7 +61,7 @@ const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<st
 };
 
 const getSingleAdminFromDB = async (id: string): Promise<Admin | null> => {
-    const admin = await prisma.admin.findUnique({
+    const admin = await prisma.admin.findUniqueOrThrow({
         where: {
             id,
             isDeleted: false
