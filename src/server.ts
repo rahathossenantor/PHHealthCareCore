@@ -4,7 +4,7 @@ import { Server } from "http";
 let server: Server;
 const port = 3000;
 
-const main = async () => {
+const main: () => Promise<void> = async () => {
     server = app.listen(port, () => {
         console.log(`Server is listening on http://localhost:${port}`);
     });
