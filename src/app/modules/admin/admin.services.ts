@@ -3,8 +3,9 @@ import { adminSearchableFields } from "./admin.constants";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 import { TMeta, TOptions } from "../../types/global.types";
 import prisma from "../../utils/prisma";
+import { TAdminSearchParams } from "./admin.types";
 
-const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<string, any>): Promise<{
+const getAllAdminsFromDB = async (query: TAdminSearchParams, options: Partial<TOptions>): Promise<{
     meta: TMeta;
     data: Admin[];
 }> => {
@@ -31,7 +32,7 @@ const getAllAdminsFromDB = async (query: Record<string, any>, options: Record<st
         filterConditions.push({
             AND: Object.keys(restFilterConditions).map(key => ({
                 [key]: {
-                    equals: restFilterConditions[key]
+                    equals: (restFilterConditions as Record<string, any>)[key]
                 }
             }))
         });
