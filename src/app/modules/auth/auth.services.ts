@@ -111,17 +111,42 @@ const forgotPassword = async (payload: { email: string }) => {
         config.jwt_reset_pass_access_expires_in as string
     );
 
-    const resetLink = `${config.reset_password_url}/reset-password?id=${user.id}&email=${user.email}&token=${passwordResetToken}`;
+    // const resetLink = `${config.reset_password_url}/reset-password?id=${user.id}&email=${user.email}&token=${passwordResetToken}`;
+    const resetLink = `${config.reset_password_url}/reset-password?token=${passwordResetToken}`;
     await sendEmail(user.email, resetLink);
 
     return { resetLink };
+};
+
+const resetPassword = async (resetToken: string, payload: { password: string }) => {
+    const decoded = await verifyToken(resetToken, config.jwt_reset_pass_access_secret as Secret);
+
+    const user = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: decoded.email,
+            status: UserStatus.ACTIVE
+        }
+    });
+
+    const hashedPassword = await hashPassword(payload.password);
+    await prisma.user.update({
+        where: {
+            email: user.email
+        },
+        data: {
+            password: hashedPassword
+        }
+    });
+
+    return null;
 };
 
 const authServices = {
     loginUser,
     getRefreshToken,
     changePassword,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 };
 
 export default authServices;
