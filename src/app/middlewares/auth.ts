@@ -7,7 +7,7 @@ import AppError from "../errors/AppError";
 import httpStatus from "http-status";
 
 const auth = (...roles: UserRole[]) => {
-    return catchAsync(async (req: Request, _res: Response, next: NextFunction) => {
+    return catchAsync(async (req: Request & { user?: any }, _res: Response, next: NextFunction) => {
         const token = req.headers.authorization;
         if (!token) {
             throw new AppError(httpStatus.UNAUTHORIZED, "Unauthorized request!");
