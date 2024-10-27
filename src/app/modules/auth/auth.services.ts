@@ -44,7 +44,7 @@ const loginUser = async (payload: any) => {
 };
 
 const getRefreshToken = async (refreshToken: string) => {
-    const decoded = await verifyToken(refreshToken, "12qw32537gdfe3");
+    const decoded = await verifyToken(refreshToken, config.jwt_refresh_secret as Secret);
 
     const user = await prisma.user.findUniqueOrThrow({
         where: {
