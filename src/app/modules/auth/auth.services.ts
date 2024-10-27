@@ -5,6 +5,7 @@ import verifyToken from "../../utils/verifyToken";
 import { UserStatus } from "@prisma/client";
 import config from "../../config";
 import { Secret } from "jsonwebtoken";
+import hashPassword from "../../utils/hashPassword";
 
 const loginUser = async (payload: any) => {
     const user = await prisma.user.findUniqueOrThrow({
@@ -65,9 +66,37 @@ const getRefreshToken = async (refreshToken: string) => {
     return accessToken;
 };
 
+const changePassword = async (decodedUser: any, payload: any) => {
+    const user = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: decodedUser.email,
+            status: UserStatus.ACTIVE
+        }
+    });
+
+    const isPasswordMatched = await checkPassword(payload.oldPassword, user.password);
+    if (!isPasswordMatched) {
+        throw new Error("Invalid credentials.");
+    };
+
+    const hashedPassword = await hashPassword(payload.newPassword);
+    await prisma.user.update({
+        where: {
+            email: user.email
+        },
+        data: {
+            password: hashedPassword,
+            needPasswordChange: false
+        }
+    });
+
+    return null;
+};
+
 const authServices = {
     loginUser,
-    getRefreshToken
+    getRefreshToken,
+    changePassword
 };
 
 export default authServices;

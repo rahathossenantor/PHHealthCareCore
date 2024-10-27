@@ -2,11 +2,13 @@ import { Router } from "express";
 import adminControllers from "./admin.controllers";
 import requestValidator from "../../middlewares/requestValidator";
 import { adminValidations } from "./admin.validations";
+import auth from "../../middlewares/auth";
 
 const router = Router();
 
 router.get(
     "/",
+    auth("SUPER_ADMIN", "ADMIN"),
     adminControllers.getAllAdmins
 );
 
@@ -17,12 +19,14 @@ router.get(
 
 router.patch(
     "/:id",
+    auth("SUPER_ADMIN", "ADMIN"),
     requestValidator(adminValidations.updateSchema),
     adminControllers.updateAdmin
 );
 
 router.delete(
     "/:id",
+    auth("SUPER_ADMIN", "ADMIN"),
     adminControllers.deleteAdmin
 );
 

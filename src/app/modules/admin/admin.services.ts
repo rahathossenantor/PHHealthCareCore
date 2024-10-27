@@ -88,6 +88,7 @@ const updateAdminIntoDB = async (id: string, payload: Partial<Admin>): Promise<A
     return res;
 };
 
+// HARD DELETE
 // const deleteAdminFromDB = async (id: string) => {
 //     await prisma.admin.findUniqueOrThrow({
 //         where: {
@@ -112,6 +113,7 @@ const updateAdminIntoDB = async (id: string, payload: Partial<Admin>): Promise<A
 //     return res;
 // };
 
+// SOFT DELETE
 const deleteAdminFromDB = async (id: string): Promise<Admin> => {
     await prisma.admin.findUniqueOrThrow({
         where: {

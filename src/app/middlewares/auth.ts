@@ -20,6 +20,7 @@ const auth = (...roles: UserRole[]) => {
             throw new AppError(httpStatus.FORBIDDEN, "You're not allowed to access this resource!", "Forbidden!");
         };
 
+        req.user = decoded;
         next();
     });
 };
