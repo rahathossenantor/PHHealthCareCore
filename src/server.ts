@@ -1,8 +1,9 @@
 import app from "./app";
 import { Server } from "http";
+import config from "./app/config";
 
 let server: Server;
-const port = 3000;
+const port = config.port;
 
 const main: () => Promise<void> = async () => {
     server = app.listen(port, () => {

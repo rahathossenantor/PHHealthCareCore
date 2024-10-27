@@ -3,6 +3,8 @@ import checkPassword from "../../utils/checkPassword";
 import { createToken } from "./auth.utils";
 import verifyToken from "../../utils/verifyToken";
 import { UserStatus } from "@prisma/client";
+import config from "../../config";
+import { Secret } from "jsonwebtoken";
 
 const loginUser = async (payload: any) => {
     const user = await prisma.user.findUniqueOrThrow({
@@ -22,16 +24,16 @@ const loginUser = async (payload: any) => {
             email: user.email,
             role: user.role
         },
-        process.env.JWT_SECRET!,
-        "10m"
+        config.jwt_access_secret as Secret,
+        config.jwt_access_expires_in as string
     );
     const refreshToken = createToken(
         {
             email: user.email,
             role: user.role
         },
-        "12qw32537gdfe3",
-        "30d"
+        config.jwt_refresh_secret as Secret,
+        config.jwt_refresh_expires_in as string
     );
 
     return {
@@ -56,8 +58,8 @@ const getRefreshToken = async (refreshToken: string) => {
             email: user.email,
             role: user.role
         },
-        process.env.JWT_SECRET!,
-        "10m"
+        config.jwt_access_secret as Secret,
+        config.jwt_access_expires_in as string
     );
 
     return accessToken;

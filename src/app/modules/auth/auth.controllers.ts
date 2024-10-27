@@ -3,6 +3,7 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import authServices from "./auth.services";
+import config from "../../config";
 
 const loginUser = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
     const response = await authServices.loginUser(req.body);
@@ -10,7 +11,7 @@ const loginUser = catchAsync(async (req: Request, res: Response, _next: NextFunc
 
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: config.node_env === "production",
         sameSite: "none",
         maxAge: 1000 * 60 * 60 * 24 * 365
     });
