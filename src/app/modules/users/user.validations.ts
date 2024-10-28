@@ -30,7 +30,14 @@ const patientCreateSchema = z.object({
     })
 });
 
+const userStatusUpdateSchema = z.object({
+    body: z.object({
+        status: z.enum(["ACTIVE", "BLOCKED", "DELETED"])
+    })
+});
+
 export const userValidations = {
     doctorCreateSchema,
-    patientCreateSchema
+    patientCreateSchema,
+    userStatusUpdateSchema
 };

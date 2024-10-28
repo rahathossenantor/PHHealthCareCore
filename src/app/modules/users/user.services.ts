@@ -1,4 +1,4 @@
-import { Prisma, User, UserRole } from "@prisma/client";
+import { Prisma, User, UserRole, UserStatus } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import hashPassword from "../../utils/hashPassword";
 import uploadImage from "../../utils/uploadImage";
@@ -157,11 +157,28 @@ const getAllUsersFromDB = async (query: any, options: Partial<TOptions>) => {
     };
 };
 
+const updateUserStatusIntoDB = async (id: string, data: { status: UserStatus }) => {
+    await prisma.user.findUniqueOrThrow({
+        where: {
+            id
+        }
+    });
+
+    const res = await prisma.user.update({
+        where: {
+            id
+        },
+        data
+    });
+    return res;
+}
+
 const userServices = {
     createAdminIntoDB,
     createDoctorIntoDB,
     createPatientIntoDB,
-    getAllUsersFromDB
+    getAllUsersFromDB,
+    updateUserStatusIntoDB
 };
 
 export default userServices;
