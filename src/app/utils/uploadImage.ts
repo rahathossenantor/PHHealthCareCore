@@ -48,7 +48,6 @@ export const upload = multer({ storage });
 
 // upload to cloudinary
 const uploadImage = (file: TFile): Promise<TCloudinaryRes> => {
-    console.log(file);
     return new Promise((resolve, reject) => {
         cloudinary.uploader.upload(file.path, (err: Error, res: TCloudinaryRes) => {
             if (err) {

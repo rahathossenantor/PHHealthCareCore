@@ -27,7 +27,7 @@ router.post(
         next();
     },
     requestValidator(userValidations.doctorCreateSchema),
-    userControllers.createAdmin
+    userControllers.createDoctor
 );
 
 const userRoutes = router;
