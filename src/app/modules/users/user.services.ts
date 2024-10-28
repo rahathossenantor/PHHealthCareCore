@@ -93,10 +93,7 @@ const createPatientIntoDB = async (file: TFile, payload: any) => {
     return res;
 };
 
-const getAllUsersFromDB = async (query: any, options: Partial<TOptions>): Promise<{
-    meta: TMeta;
-    data: User[];
-}> => {
+const getAllUsersFromDB = async (query: any, options: Partial<TOptions>) => {
     const filterConditions: Prisma.UserWhereInput[] = [];
     const { searchTerm, ...restFilterConditions } = query;
     const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options as TOptions);
@@ -132,6 +129,18 @@ const getAllUsersFromDB = async (query: any, options: Partial<TOptions>): Promis
         take: limit,
         orderBy: {
             [sortBy]: sortOrder
+        },
+        select: {
+            id: true,
+            email: true,
+            role: true,
+            status: true,
+            admin: true,
+            doctor: true,
+            patient: true,
+            createdAt: true,
+            updatedAt: true,
+            needPasswordChange: true
         }
     });
     const total = await prisma.user.count({
