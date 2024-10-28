@@ -18,6 +18,19 @@ const doctorCreateSchema = z.object({
     })
 });
 
+const patientCreateSchema = z.object({
+    body: z.object({
+        password: z.string().optional(),
+        patient: z.object({
+            name: z.string(),
+            email: z.string().email(),
+            contactNumber: z.string(),
+            address: z.string().optional()
+        })
+    })
+});
+
 export const userValidations = {
-    doctorCreateSchema
+    doctorCreateSchema,
+    patientCreateSchema
 };
