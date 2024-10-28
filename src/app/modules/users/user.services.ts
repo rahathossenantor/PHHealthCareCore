@@ -1,8 +1,9 @@
-import { UserRole } from "@prisma/client";
+import { Prisma, User, UserRole } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import hashPassword from "../../utils/hashPassword";
 import uploadImage from "../../utils/uploadImage";
-import { TFile } from "../../types/global.types";
+import { TFile, TMeta, TOptions } from "../../types/global.types";
+import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 
 const createAdminIntoDB = async (file: TFile, payload: any) => {
     if (file) {
@@ -91,10 +92,66 @@ const createPatientIntoDB = async (file: TFile, payload: any) => {
     return res;
 };
 
+const getAllUsersFromDB = async (query: any, options: Partial<TOptions>): Promise<{
+    meta: TMeta;
+    data: User[];
+}> => {
+    const filterConditions: Prisma.UserWhereInput[] = [];
+    const { searchTerm, ...restFilterConditions } = query;
+    const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options as TOptions);
+
+    // search on multiple fields globally
+    if (searchTerm) {
+        filterConditions.push({
+            OR: ["email"].map(field => ({
+                [field]: {
+                    contains: searchTerm,
+                    mode: "insensitive"
+                }
+            }))
+        });
+    };
+
+    // search on seperate fields specifically
+    if (Object.keys(restFilterConditions).length) {
+        filterConditions.push({
+            AND: Object.keys(restFilterConditions).map(key => ({
+                [key]: {
+                    equals: (restFilterConditions as Record<string, any>)[key]
+                }
+            }))
+        });
+    };
+
+    const whereConditions: Prisma.UserWhereInput = filterConditions.length ? { AND: filterConditions } : {};
+
+    const res = await prisma.user.findMany({
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy: {
+            [sortBy]: sortOrder
+        }
+    });
+    const total = await prisma.user.count({
+        where: whereConditions
+    });
+
+    return {
+        meta: {
+            page,
+            limit,
+            total
+        },
+        data: res
+    };
+};
+
 const userServices = {
     createAdminIntoDB,
     createDoctorIntoDB,
-    createPatientIntoDB
+    createPatientIntoDB,
+    getAllUsersFromDB
 };
 
 export default userServices;
