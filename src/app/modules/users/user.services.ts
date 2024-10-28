@@ -62,9 +62,39 @@ const createDoctorIntoDB = async (file: TFile, payload: any) => {
     return res;
 };
 
+const createPatientIntoDB = async (file: TFile, payload: any) => {
+    if (file) {
+        const res = await uploadImage(file);
+        payload.patient.profilePhoto = res?.secure_url;
+    };
+
+    const hashedPassword = await hashPassword(payload.password);
+
+    const userData = {
+        email: payload.patient.email,
+        password: hashedPassword,
+        role: UserRole.PATIENT
+    };
+
+    const res = await prisma.$transaction(async (transactionClient) => {
+        await transactionClient.user.create({
+            data: userData
+        });
+
+        const patient = await transactionClient.patient.create({
+            data: payload.patient
+        });
+
+        return patient;
+    });
+
+    return res;
+};
+
 const userServices = {
     createAdminIntoDB,
-    createDoctorIntoDB
+    createDoctorIntoDB,
+    createPatientIntoDB
 };
 
 export default userServices;
