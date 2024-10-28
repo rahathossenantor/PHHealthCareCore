@@ -4,6 +4,7 @@ import hashPassword from "../../utils/hashPassword";
 import uploadImage from "../../utils/uploadImage";
 import { TFile, TMeta, TOptions } from "../../types/global.types";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
+import { userSearchableFields } from "./user.constants";
 
 const createAdminIntoDB = async (file: TFile, payload: any) => {
     if (file) {
@@ -103,7 +104,7 @@ const getAllUsersFromDB = async (query: any, options: Partial<TOptions>): Promis
     // search on multiple fields globally
     if (searchTerm) {
         filterConditions.push({
-            OR: ["email"].map(field => ({
+            OR: userSearchableFields.map(field => ({
                 [field]: {
                     contains: searchTerm,
                     mode: "insensitive"
