@@ -5,7 +5,7 @@ import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 
 const createAdmin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const admin = await userServices.createAdminIntoDB(req);
+    const admin = await userServices.createAdminIntoDB(req.file, req.body);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

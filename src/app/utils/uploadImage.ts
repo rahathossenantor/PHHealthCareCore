@@ -2,6 +2,31 @@ import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 import config from "../config";
 import fs from "fs";
+import { TFile } from "../types/global.types";
+
+type TCloudinaryRes = {
+    asset_id: string;
+    public_id: string;
+    version: number;
+    version_id: string;
+    signature: string;
+    width: number;
+    height: number;
+    format: string;
+    resource_type: string;
+    created_at: string;
+    tags: string[];
+    bytes: number;
+    type: string;
+    etag: string;
+    placeholder: boolean;
+    url: string;
+    secure_url: string;
+    asset_folder: string;
+    display_name: string;
+    original_filename: string;
+    api_key: string;
+};
 
 cloudinary.config({
     cloud_name: config.cloudinary_cloud_name,
@@ -22,9 +47,10 @@ const storage = multer.diskStorage({
 export const upload = multer({ storage });
 
 // upload to cloudinary
-const uploadImage = (file: any) => {
+const uploadImage = (file: TFile): Promise<TCloudinaryRes> => {
+    console.log(file);
     return new Promise((resolve, reject) => {
-        cloudinary.uploader.upload(file.path, { public_id: file.originalname }, (err, res) => {
+        cloudinary.uploader.upload(file.path, (err: Error, res: TCloudinaryRes) => {
             if (err) {
                 reject(err);
             };

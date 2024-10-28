@@ -1,13 +1,10 @@
 import { UserRole } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import hashPassword from "../../utils/hashPassword";
-import { Request } from "express";
 import uploadImage from "../../utils/uploadImage";
+import { TFile } from "../../types/global.types";
 
-const createAdminIntoDB = async (req: Request) => {
-    const { body, file } = req;
-    const payload = JSON.parse(body.data);
-
+const createAdminIntoDB = async (file: TFile, payload: any) => {
     if (file) {
         const res = await uploadImage(file);
         payload.admin.profilePhoto = res?.secure_url;
