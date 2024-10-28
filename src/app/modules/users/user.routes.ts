@@ -47,6 +47,13 @@ router.post(
     userControllers.createPatient
 );
 
+router.patch(
+    "/update-status/:id",
+    auth("SUPER_ADMIN", "ADMIN"),
+    requestValidator(userValidations.userStatusUpdateSchema),
+    userControllers.updateUserStatus
+);
+
 const userRoutes = router;
 
 export default userRoutes;
