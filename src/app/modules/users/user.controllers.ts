@@ -6,6 +6,7 @@ import catchAsync from "../../utils/catchAsync";
 import pick from "../../utils/pick";
 import { filterAndPaginateOptions } from "../../constants/global.constants";
 import { userFiltarableFields } from "./user.constants";
+import { TTokenPayload } from "../../types/global.types";
 
 const createAdmin = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
     const admin = await userServices.createAdminIntoDB(req.file!, req.body);
@@ -62,12 +63,24 @@ const updateUserStatus = catchAsync(async (req: Request, res: Response, _next: N
     });
 });
 
+const getMe = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+    const response = await userServices.getMeFromDB(req.user as TTokenPayload);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "My profile fetched successfully.",
+        data: response
+    });
+});
+
 const userControllers = {
     createAdmin,
     createDoctor,
     createPatient,
     getAllUsers,
-    updateUserStatus
+    updateUserStatus,
+    getMe
 };
 
 export default userControllers;

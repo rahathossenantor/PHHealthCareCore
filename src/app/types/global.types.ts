@@ -1,3 +1,5 @@
+import { UserRole } from "@prisma/client";
+
 export type TOptions = {
     page: string;
     limit: string;
@@ -20,4 +22,11 @@ export type TFile = {
     filename: string;
     path: string;
     size: number;
+};
+
+export type TTokenPayload = {
+    email: string;
+    role: UserRole;
+    iat: number;
+    exp: number;
 };

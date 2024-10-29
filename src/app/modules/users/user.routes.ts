@@ -13,6 +13,12 @@ router.get(
     userControllers.getAllUsers
 );
 
+router.get(
+    "/me",
+    auth("SUPER_ADMIN", "ADMIN", "DOCTOR", "PATIENT"),
+    userControllers.getMe
+);
+
 router.post(
     "/create-admin",
     auth("SUPER_ADMIN", "ADMIN"),

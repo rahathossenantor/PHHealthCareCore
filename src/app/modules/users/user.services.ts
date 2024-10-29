@@ -1,8 +1,8 @@
-import { Admin, Doctor, Patient, Prisma, User, UserRole, UserStatus } from "@prisma/client";
+import { Admin, Doctor, Patient, Prisma, UserRole, UserStatus } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import hashPassword from "../../utils/hashPassword";
 import uploadImage from "../../utils/uploadImage";
-import { TFile, TMeta, TOptions } from "../../types/global.types";
+import { TFile, TOptions, TTokenPayload } from "../../types/global.types";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 import { userSearchableFields } from "./user.constants";
 
@@ -173,10 +173,10 @@ const updateUserStatusIntoDB = async (id: string, data: { status: UserStatus }) 
     return res;
 };
 
-const getMeFromDB = async (payload: User) => {
+const getMeFromDB = async (payload: TTokenPayload) => {
     const user = await prisma.user.findUniqueOrThrow({
         where: {
-            id: payload.id
+            email: payload.email
         },
         select: {
             id: true,
@@ -192,19 +192,19 @@ const getMeFromDB = async (payload: User) => {
     if (user.role === UserRole.SUPER_ADMIN || user.role === UserRole.ADMIN) {
         me = await prisma.admin.findUniqueOrThrow({
             where: {
-                id: user.id
+                email: user.email
             }
         });
     } else if (user.role === UserRole.DOCTOR) {
         me = await prisma.doctor.findUniqueOrThrow({
             where: {
-                id: user.id
+                email: user.email
             }
         });
     } else if (user.role === UserRole.PATIENT) {
         me = await prisma.patient.findUniqueOrThrow({
             where: {
-                id: user.id
+                email: user.email
             }
         });
     };
