@@ -22,6 +22,12 @@ router.post(
     specialtyControllers.createSpecialty
 );
 
+router.delete(
+    "/:id",
+    auth("SUPER_ADMIN", "ADMIN"),
+    specialtyControllers.deleteSingleSpecialty
+);
+
 const specialtyRoutes = router;
 
 export default specialtyRoutes;
