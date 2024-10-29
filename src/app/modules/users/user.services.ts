@@ -1,4 +1,4 @@
-import { Prisma, User, UserRole, UserStatus } from "@prisma/client";
+import { Admin, Doctor, Patient, Prisma, User, UserRole, UserStatus } from "@prisma/client";
 import prisma from "../../utils/prisma";
 import hashPassword from "../../utils/hashPassword";
 import uploadImage from "../../utils/uploadImage";
@@ -171,14 +171,57 @@ const updateUserStatusIntoDB = async (id: string, data: { status: UserStatus }) 
         data
     });
     return res;
-}
+};
+
+const getMeFromDB = async (payload: User) => {
+    const user = await prisma.user.findUniqueOrThrow({
+        where: {
+            id: payload.id
+        },
+        select: {
+            id: true,
+            email: true,
+            role: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true
+        }
+    });
+
+    let me: Admin | Doctor | Patient | null = null;
+    if (user.role === UserRole.SUPER_ADMIN || user.role === UserRole.ADMIN) {
+        me = await prisma.admin.findUniqueOrThrow({
+            where: {
+                id: user.id
+            }
+        });
+    } else if (user.role === UserRole.DOCTOR) {
+        me = await prisma.doctor.findUniqueOrThrow({
+            where: {
+                id: user.id
+            }
+        });
+    } else if (user.role === UserRole.PATIENT) {
+        me = await prisma.patient.findUniqueOrThrow({
+            where: {
+                id: user.id
+            }
+        });
+    };
+
+    return {
+        ...user,
+        ...me
+    };
+};
 
 const userServices = {
     createAdminIntoDB,
     createDoctorIntoDB,
     createPatientIntoDB,
     getAllUsersFromDB,
-    updateUserStatusIntoDB
+    updateUserStatusIntoDB,
+    getMeFromDB
 };
 
 export default userServices;
