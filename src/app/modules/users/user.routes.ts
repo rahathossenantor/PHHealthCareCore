@@ -60,6 +60,17 @@ router.patch(
     userControllers.updateUserStatus
 );
 
+router.patch(
+    "/update-me",
+    auth("SUPER_ADMIN", "ADMIN", "DOCTOR", "PATIENT"),
+    upload.single("file"),
+    (req: Request, _res: Response, next: NextFunction) => {
+        req.body = JSON.parse(req.body.data);
+        next();
+    },
+    userControllers.updateMe
+);
+
 const userRoutes = router;
 
 export default userRoutes;

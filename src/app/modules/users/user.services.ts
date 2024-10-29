@@ -5,6 +5,7 @@ import uploadImage from "../../utils/uploadImage";
 import { TFile, TOptions, TTokenPayload } from "../../types/global.types";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 import { userSearchableFields } from "./user.constants";
+import { Request } from "express";
 
 const createAdminIntoDB = async (file: TFile, payload: any) => {
     if (file) {
@@ -216,7 +217,9 @@ const getMeFromDB = async (tokenData: TTokenPayload) => {
     };
 };
 
-const updateMeIntoDB = async (tokenData: TTokenPayload, payload: Partial<Admin> | Partial<Doctor> | Partial<Patient>) => {
+const updateMeIntoDB = async (req: Request & { user: TTokenPayload }) => {
+    const { body, file, user: tokenData } = req;
+
     const user = await prisma.user.findUniqueOrThrow({
         where: {
             email: tokenData.email,
@@ -224,27 +227,32 @@ const updateMeIntoDB = async (tokenData: TTokenPayload, payload: Partial<Admin> 
         }
     });
 
+    if (file) {
+        const res = await uploadImage(file);
+        body.profilePhoto = res?.secure_url;
+    };
+
     let me: Admin | Doctor | Patient | null = null;
     if (user.role === UserRole.SUPER_ADMIN || user.role === UserRole.ADMIN) {
         me = await prisma.admin.update({
             where: {
                 email: user.email
             },
-            data: payload
+            data: body
         });
     } else if (user.role === UserRole.DOCTOR) {
         me = await prisma.doctor.update({
             where: {
                 email: user.email
             },
-            data: payload
+            data: body
         });
     } else if (user.role === UserRole.PATIENT) {
         me = await prisma.patient.update({
             where: {
                 email: user.email
             },
-            data: payload
+            data: body
         });
     };
 

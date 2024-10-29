@@ -64,7 +64,7 @@ const updateUserStatus = catchAsync(async (req: Request, res: Response, _next: N
 });
 
 const getMe = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const response = await userServices.getMeFromDB(req.user as TTokenPayload);
+    const response = await userServices.getMeFromDB((req as Request & { user: TTokenPayload }).user);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -75,8 +75,7 @@ const getMe = catchAsync(async (req: Request, res: Response, _next: NextFunction
 });
 
 const updateMe = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    console.log(req.user, req.body);
-    const response = await userServices.updateMeIntoDB(req.user as TTokenPayload, req.body);
+    const response = await userServices.updateMeIntoDB(req as Request & { user: TTokenPayload });
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
