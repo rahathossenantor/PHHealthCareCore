@@ -39,23 +39,23 @@ model Admin {
 }
 
 model Doctor {
-  id                  String            @id @default(uuid())
+  id                  String           @id @default(uuid())
   name                String
-  email               String            @unique
+  email               String           @unique
   profilePhoto        String?
   contactNumber       String
   address             String?
   registrationNumber  String
-  experience          Int               @default(0)
+  experience          Int              @default(0)
   appointmentFee      Int
   qualification       String
   currentWorkingPlace String
   designation         String
-  isDeleted           Boolean           @default(false)
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  user                User              @relation(fields: [email], references: [email])
-  dotorSpeciality     DotorSpeciality[]
+  isDeleted           Boolean          @default(false)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  user                User             @relation(fields: [email], references: [email])
+  dotorSpecialty      DotorSpecialty[]
 
   @@map("doctors")
 }
@@ -75,24 +75,24 @@ model Patient {
   @@map("patients")
 }
 
-model Speciality {
-  id              String            @id @default(uuid())
-  title           String
-  icon            String
-  dotorSpeciality DotorSpeciality[]
+model Specialty {
+  id             String           @id @default(uuid())
+  title          String
+  icon           String
+  dotorSpecialty DotorSpecialty[]
 
   @@map("specialities")
 }
 
-model DotorSpeciality {
-  specialityId String
-  specialities Speciality @relation(fields: [specialityId], references: [id])
+model DotorSpecialty {
+  specialtyId String
+  specialties Specialty @relation(fields: [specialtyId], references: [id])
 
   doctorId String
   doctors  Doctor @relation(fields: [doctorId], references: [id])
 
-  @@id([specialityId, doctorId])
-  @@map("doctor_speciality")
+  @@id([specialtyId, doctorId])
+  @@map("doctor_specialty")
 }
 
 // enums

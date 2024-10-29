@@ -10,15 +10,15 @@ const createSpecialityIntoDB = async (req: Request) => {
         body.icon = res?.secure_url;
     };
 
-    const speciality = await prisma.speciality.create({
+    const specialty = await prisma.specialty.create({
         data: body
     });
 
-    return speciality;
+    return specialty;
 };
 
-const specialityServices = {
+const specialtyServices = {
     createSpecialityIntoDB
 };
 
-export default specialityServices;
+export default specialtyServices;
