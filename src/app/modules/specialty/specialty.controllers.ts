@@ -26,9 +26,21 @@ const getAllSpecialties = catchAsync(async (req: Request, res: Response, _next: 
     });
 });
 
+const deleteSingleSpecialty = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+    const response = await specialtyServices.deleteSingleSpecialtyFromDB(req.params.id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Specialty deleted successfully.",
+        data: response
+    });
+});
+
 const specialtyControllers = {
     createSpecialty,
-    getAllSpecialties
+    getAllSpecialties,
+    deleteSingleSpecialty
 };
 
 export default specialtyControllers;
