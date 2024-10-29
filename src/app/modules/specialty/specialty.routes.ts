@@ -5,6 +5,12 @@ import specialtyControllers from "./specialty.controllers";
 
 const router = Router();
 
+router.get(
+    "/",
+    auth("SUPER_ADMIN", "ADMIN", "DOCTOR"),
+    specialtyControllers.getAllSpecialties
+);
+
 router.post(
     "/create-specialty",
     auth("SUPER_ADMIN", "ADMIN"),
