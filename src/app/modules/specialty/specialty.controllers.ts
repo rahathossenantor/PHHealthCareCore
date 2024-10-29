@@ -4,19 +4,19 @@ import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import specialtyServices from "./specialty.services";
 
-const createSpeciality = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const response = await specialtyServices.createSpecialityIntoDB(req);
+const createSpecialty = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+    const response = await specialtyServices.createSpecialtyIntoDB(req);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: "Speciality created successfully.",
+        message: "Specialty created successfully.",
         data: response
     });
 });
 
 const specialtyControllers = {
-    createSpeciality
+    createSpecialty
 };
 
 export default specialtyControllers;

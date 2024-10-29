@@ -2,7 +2,7 @@ import { Request } from "express";
 import uploadImage from "../../utils/uploadImage";
 import prisma from "../../utils/prisma";
 
-const createSpecialityIntoDB = async (req: Request) => {
+const createSpecialtyIntoDB = async (req: Request) => {
     const { body, file } = req;
 
     if (file) {
@@ -18,7 +18,7 @@ const createSpecialityIntoDB = async (req: Request) => {
 };
 
 const specialtyServices = {
-    createSpecialityIntoDB
+    createSpecialtyIntoDB
 };
 
 export default specialtyServices;

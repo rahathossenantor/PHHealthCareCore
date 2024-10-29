@@ -72,12 +72,12 @@ CREATE TABLE "patients" (
 );
 
 -- CreateTable
-CREATE TABLE "specialities" (
+CREATE TABLE "specialties" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "icon" TEXT NOT NULL,
 
-    CONSTRAINT "specialities_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "specialties_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -110,7 +110,7 @@ ALTER TABLE "doctors" ADD CONSTRAINT "doctors_email_fkey" FOREIGN KEY ("email") 
 ALTER TABLE "patients" ADD CONSTRAINT "patients_email_fkey" FOREIGN KEY ("email") REFERENCES "users"("email") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "doctor_specialty" ADD CONSTRAINT "doctor_specialty_specialtyId_fkey" FOREIGN KEY ("specialtyId") REFERENCES "specialities"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "doctor_specialty" ADD CONSTRAINT "doctor_specialty_specialtyId_fkey" FOREIGN KEY ("specialtyId") REFERENCES "specialties"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "doctor_specialty" ADD CONSTRAINT "doctor_specialty_doctorId_fkey" FOREIGN KEY ("doctorId") REFERENCES "doctors"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

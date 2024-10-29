@@ -13,7 +13,7 @@ router.post(
         req.body = JSON.parse(req.body.data);
         next();
     },
-    specialtyControllers.createSpeciality
+    specialtyControllers.createSpecialty
 );
 
 const specialtyRoutes = router;
