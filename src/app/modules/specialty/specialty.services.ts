@@ -22,9 +22,19 @@ const getAllSpecialtiesFromDB = async () => {
     return specialties;
 };
 
+const deleteSingleSpecialtyFromDB = async (id: string) => {
+    const specialty = await prisma.specialty.delete({
+        where: {
+            id
+        }
+    });
+    return specialty;
+};
+
 const specialtyServices = {
     createSpecialtyIntoDB,
-    getAllSpecialtiesFromDB
+    getAllSpecialtiesFromDB,
+    deleteSingleSpecialtyFromDB
 };
 
 export default specialtyServices;
