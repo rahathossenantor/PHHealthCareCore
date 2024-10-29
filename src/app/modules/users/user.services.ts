@@ -173,10 +173,11 @@ const updateUserStatusIntoDB = async (id: string, data: { status: UserStatus }) 
     return res;
 };
 
-const getMeFromDB = async (payload: TTokenPayload) => {
+const getMeFromDB = async (tokenData: TTokenPayload) => {
     const user = await prisma.user.findUniqueOrThrow({
         where: {
-            email: payload.email
+            email: tokenData.email,
+            status: UserStatus.ACTIVE
         },
         select: {
             id: true,
@@ -215,13 +216,49 @@ const getMeFromDB = async (payload: TTokenPayload) => {
     };
 };
 
+const updateMeIntoDB = async (tokenData: TTokenPayload, payload: Partial<Admin> | Partial<Doctor> | Partial<Patient>) => {
+    const user = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: tokenData.email,
+            status: UserStatus.ACTIVE
+        }
+    });
+
+    let me: Admin | Doctor | Patient | null = null;
+    if (user.role === UserRole.SUPER_ADMIN || user.role === UserRole.ADMIN) {
+        me = await prisma.admin.update({
+            where: {
+                email: user.email
+            },
+            data: payload
+        });
+    } else if (user.role === UserRole.DOCTOR) {
+        me = await prisma.doctor.update({
+            where: {
+                email: user.email
+            },
+            data: payload
+        });
+    } else if (user.role === UserRole.PATIENT) {
+        me = await prisma.patient.update({
+            where: {
+                email: user.email
+            },
+            data: payload
+        });
+    };
+
+    return me;
+};
+
 const userServices = {
     createAdminIntoDB,
     createDoctorIntoDB,
     createPatientIntoDB,
     getAllUsersFromDB,
     updateUserStatusIntoDB,
-    getMeFromDB
+    getMeFromDB,
+    updateMeIntoDB
 };
 
 export default userServices;
