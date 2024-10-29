@@ -74,13 +74,26 @@ const getMe = catchAsync(async (req: Request, res: Response, _next: NextFunction
     });
 });
 
+const updateMe = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+    console.log(req.user, req.body);
+    const response = await userServices.updateMeIntoDB(req.user as TTokenPayload, req.body);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "My profile updated successfully.",
+        data: response
+    });
+});
+
 const userControllers = {
     createAdmin,
     createDoctor,
     createPatient,
     getAllUsers,
     updateUserStatus,
-    getMe
+    getMe,
+    updateMe
 };
 
 export default userControllers;
