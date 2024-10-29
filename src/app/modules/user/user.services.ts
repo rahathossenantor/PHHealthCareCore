@@ -6,6 +6,7 @@ import { TFile, TOptions, TTokenPayload } from "../../types/global.types";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 import { userSearchableFields } from "./user.constants";
 import { Request } from "express";
+import config from "../../config";
 
 const createAdminIntoDB = async (file: TFile, payload: any) => {
     if (file) {
@@ -13,7 +14,7 @@ const createAdminIntoDB = async (file: TFile, payload: any) => {
         payload.admin.profilePhoto = res?.secure_url;
     };
 
-    const hashedPassword = await hashPassword(payload.password);
+    const hashedPassword = await hashPassword(payload.password || config.default_pass);
 
     const userData = {
         email: payload.admin.email,
@@ -42,7 +43,7 @@ const createDoctorIntoDB = async (file: TFile, payload: any) => {
         payload.doctor.profilePhoto = res?.secure_url;
     };
 
-    const hashedPassword = await hashPassword(payload.password);
+    const hashedPassword = await hashPassword(payload.password || config.default_pass);
 
     const userData = {
         email: payload.doctor.email,
@@ -71,7 +72,7 @@ const createPatientIntoDB = async (file: TFile, payload: any) => {
         payload.patient.profilePhoto = res?.secure_url;
     };
 
-    const hashedPassword = await hashPassword(payload.password);
+    const hashedPassword = await hashPassword(payload.password || config.default_pass);
 
     const userData = {
         email: payload.patient.email,
