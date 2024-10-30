@@ -61,6 +61,23 @@ const getAllDoctorsFromDB = async (query: TDoctorSearchParams, options: Partial<
     };
 };
 
+const updateDoctorIntoDB = async (id: string, payload: Partial<Doctor>): Promise<Doctor> => {
+    await prisma.doctor.findUniqueOrThrow({
+        where: {
+            id,
+            isDeleted: false
+        }
+    });
+
+    const res = await prisma.doctor.update({
+        where: {
+            id
+        },
+        data: payload
+    });
+    return res;
+};
+
 const deleteDoctorFromDB = async (id: string): Promise<Doctor> => {
     await prisma.doctor.findUniqueOrThrow({
         where: {
@@ -93,7 +110,8 @@ const deleteDoctorFromDB = async (id: string): Promise<Doctor> => {
 
 const doctorServices = {
     getAllDoctorsFromDB,
-    deleteDoctorFromDB
+    deleteDoctorFromDB,
+    updateDoctorIntoDB
 };
 
 export default doctorServices;
