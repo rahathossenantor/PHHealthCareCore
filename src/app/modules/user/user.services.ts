@@ -8,7 +8,7 @@ import { userSearchableFields } from "./user.constants";
 import { Request } from "express";
 import config from "../../config";
 
-const createAdminIntoDB = async (file: TFile, payload: any) => {
+const createAdminIntoDB = async (file: TFile | undefined, payload: any) => {
     if (file) {
         const res = await uploadImage(file);
         payload.admin.profilePhoto = res?.secure_url;
@@ -37,7 +37,7 @@ const createAdminIntoDB = async (file: TFile, payload: any) => {
     return res;
 };
 
-const createDoctorIntoDB = async (file: TFile, payload: any) => {
+const createDoctorIntoDB = async (file: TFile | undefined, payload: any) => {
     if (file) {
         const res = await uploadImage(file);
         payload.doctor.profilePhoto = res?.secure_url;
@@ -66,7 +66,7 @@ const createDoctorIntoDB = async (file: TFile, payload: any) => {
     return res;
 };
 
-const createPatientIntoDB = async (file: TFile, payload: any) => {
+const createPatientIntoDB = async (file: TFile | undefined, payload: any) => {
     if (file) {
         const res = await uploadImage(file);
         payload.patient.profilePhoto = res?.secure_url;

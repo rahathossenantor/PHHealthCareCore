@@ -9,7 +9,7 @@ import { userFiltarableFields } from "./user.constants";
 import { TTokenPayload } from "../../types/global.types";
 
 const createAdmin = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const admin = await userServices.createAdminIntoDB(req.file!, req.body);
+    const admin = await userServices.createAdminIntoDB(req.file, req.body);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -19,7 +19,7 @@ const createAdmin = catchAsync(async (req: Request, res: Response, _next: NextFu
 });
 
 const createDoctor = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const doctor = await userServices.createDoctorIntoDB(req.file!, req.body);
+    const doctor = await userServices.createDoctorIntoDB(req.file, req.body);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -29,7 +29,7 @@ const createDoctor = catchAsync(async (req: Request, res: Response, _next: NextF
 });
 
 const createPatient = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const patient = await userServices.createPatientIntoDB(req.file!, req.body);
+    const patient = await userServices.createPatientIntoDB(req.file, req.body);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

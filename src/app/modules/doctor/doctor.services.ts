@@ -12,7 +12,7 @@ const getAllDoctorsFromDB = async (query: TDoctorSearchParams, options: Partial<
     const filterConditions: Prisma.DoctorWhereInput[] = [{
         isDeleted: false
     }];
-    const { searchTerm, ...restFilterConditions } = query;
+    const { searchTerm, specialty, ...restFilterConditions } = query;
     const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options as TOptions);
 
     // search on multiple fields globally
@@ -24,6 +24,21 @@ const getAllDoctorsFromDB = async (query: TDoctorSearchParams, options: Partial<
                     mode: "insensitive"
                 }
             }))
+        });
+    };
+
+    if (specialty) {
+        filterConditions.push({
+            doctorSpecialty: {
+                some: {
+                    specialty: {
+                        title: {
+                            contains: specialty,
+                            mode: "insensitive"
+                        }
+                    }
+                }
+            }
         });
     };
 
