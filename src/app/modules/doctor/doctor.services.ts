@@ -1,4 +1,4 @@
-import { Doctor, Prisma } from "@prisma/client";
+import { Doctor, Prisma, UserStatus } from "@prisma/client";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 import prisma from "../../utils/prisma";
 import { TMeta, TOptions } from "../../types/global.types";
@@ -61,8 +61,39 @@ const getAllDoctorsFromDB = async (query: TDoctorSearchParams, options: Partial<
     };
 };
 
+const deleteDoctorFromDB = async (id: string): Promise<Doctor> => {
+    await prisma.doctor.findUniqueOrThrow({
+        where: {
+            id,
+            isDeleted: false
+        }
+    });
+
+    const res = await prisma.$transaction(async (transactionClient) => {
+        const doctor = await transactionClient.doctor.update({
+            where: {
+                id
+            },
+            data: {
+                isDeleted: true
+            }
+        });
+        await transactionClient.user.update({
+            where: {
+                email: doctor.email
+            },
+            data: {
+                status: UserStatus.DELETED
+            }
+        });
+        return doctor;
+    });
+    return res;
+};
+
 const doctorServices = {
-    getAllDoctorsFromDB
+    getAllDoctorsFromDB,
+    deleteDoctorFromDB
 };
 
 export default doctorServices;
