@@ -1,6 +1,2 @@
-export type TAdminSearchParams = Partial<{
-    email: string;
-    contactNumber: string;
-    name: string;
-    searchTerm: string;
-}>;
+const adminSearchParams = ["searchTerm", "name", "email", "contactNumber"] as const;
+export type TAdminSearchParams = Partial<Record<typeof adminSearchParams[number], string>>;
