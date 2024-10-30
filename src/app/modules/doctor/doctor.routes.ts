@@ -10,6 +10,12 @@ router.get(
     doctorControllers.getAllDoctors
 );
 
+router.delete(
+    "/:id",
+    auth("SUPER_ADMIN", "ADMIN"),
+    doctorControllers.deleteDoctor
+);
+
 const doctorRoutes = router;
 
 export default doctorRoutes;
