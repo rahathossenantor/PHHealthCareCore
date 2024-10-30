@@ -86,10 +86,10 @@ model Specialty {
 
 model DoctorSpecialty {
   specialtyId String
-  specialties Specialty @relation(fields: [specialtyId], references: [id])
+  specialty   Specialty @relation(fields: [specialtyId], references: [id])
 
   doctorId String
-  doctors  Doctor @relation(fields: [doctorId], references: [id])
+  doctor   Doctor @relation(fields: [doctorId], references: [id])
 
   @@id([specialtyId, doctorId])
   @@map("doctor_specialty")
