@@ -12,6 +12,7 @@ const getAllPatients = catchAsync(async (req: Request, res: Response, _next: Nex
     const options = pick(req.query, filterAndPaginateOptions);
 
     const response = await patientServices.getAllPatientsFromDB(query, options);
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
@@ -23,6 +24,7 @@ const getAllPatients = catchAsync(async (req: Request, res: Response, _next: Nex
 
 const getSinglePatient = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
     const response = await patientServices.getSinglePatientFromDB(req.params.id);
+
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,

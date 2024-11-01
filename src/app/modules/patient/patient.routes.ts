@@ -10,6 +10,12 @@ router.get(
     patientControllers.getAllPatients
 );
 
+router.get(
+    "/:id",
+    auth("SUPER_ADMIN", "ADMIN", "DOCTOR"),
+    patientControllers.getSinglePatient
+);
+
 const patientRoutes = router;
 
 export default patientRoutes;
