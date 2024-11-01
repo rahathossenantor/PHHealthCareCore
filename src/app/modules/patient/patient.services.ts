@@ -65,8 +65,19 @@ const getAllPatientsFromDB = async (query: TPatientSearchParams, options: Partia
     };
 };
 
+const getSinglePatientFromDB = async (id: string): Promise<Patient | null> => {
+    const patient = await prisma.patient.findUniqueOrThrow({
+        where: {
+            id,
+            isDeleted: false
+        }
+    });
+    return patient;
+};
+
 const patientServices = {
-    getAllPatientsFromDB
+    getAllPatientsFromDB,
+    getSinglePatientFromDB
 };
 
 export default patientServices;
