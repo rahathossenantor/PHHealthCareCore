@@ -21,8 +21,19 @@ const getAllPatients = catchAsync(async (req: Request, res: Response, _next: Nex
     });
 });
 
+const getSinglePatient = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+    const response = await patientServices.getSinglePatientFromDB(req.params.id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Patient fetched successfully.",
+        data: response
+    });
+});
+
 const patientControllers = {
-    getAllPatients
+    getAllPatients,
+    getSinglePatient
 };
 
 export default patientControllers;
