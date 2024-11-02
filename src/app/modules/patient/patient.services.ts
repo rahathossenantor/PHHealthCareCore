@@ -119,7 +119,7 @@ const updatePatientIntoDB = async (id: string, payload: any) => {
         where: {
             id
         },
-        select: {
+        include: {
             patientHealth: true,
             medicalReport: true
         }

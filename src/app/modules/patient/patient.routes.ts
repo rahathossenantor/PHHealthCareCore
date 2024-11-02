@@ -16,6 +16,12 @@ router.get(
     patientControllers.getSinglePatient
 );
 
+router.patch(
+    "/:id",
+    auth("SUPER_ADMIN", "ADMIN", "DOCTOR"),
+    patientControllers.updatePatient
+);
+
 const patientRoutes = router;
 
 export default patientRoutes;
