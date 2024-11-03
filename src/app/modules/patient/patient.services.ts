@@ -1,4 +1,4 @@
-import { Patient, Prisma } from "@prisma/client";
+import { Patient, Prisma, UserStatus } from "@prisma/client";
 import { TMeta, TOptions } from "../../types/global.types";
 import prisma from "../../utils/prisma";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
@@ -80,7 +80,8 @@ const updatePatientIntoDB = async (id: string, payload: any) => {
 
     await prisma.patient.findUniqueOrThrow({
         where: {
-            id
+            id,
+            isDeleted: false
         }
     });
 
@@ -142,15 +143,33 @@ const deletePatientFromDB = async (id: string) => {
             }
         });
 
-        const patient = await transactionClient.patient.delete({
+        // const patient = await transactionClient.patient.delete({
+        //     where: {
+        //         id
+        //     }
+        // });
+
+        // await transactionClient.user.delete({
+        //     where: {
+        //         email: patient.email
+        //     }
+        // });
+
+        const patient = await transactionClient.patient.update({
             where: {
                 id
+            },
+            data: {
+                isDeleted: true
             }
         });
 
-        await transactionClient.user.delete({
+        await transactionClient.user.update({
             where: {
                 email: patient.email
+            },
+            data: {
+                status: UserStatus.DELETED
             }
         });
 
