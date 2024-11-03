@@ -58,7 +58,8 @@ const deletePatient = catchAsync(async (req: Request, res: Response, _next: Next
 const patientControllers = {
     getAllPatients,
     getSinglePatient,
-    updatePatient
+    updatePatient,
+    deletePatient
 };
 
 export default patientControllers;
