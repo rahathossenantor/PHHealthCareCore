@@ -16,7 +16,7 @@ const createSchedule = catchAsync(async (req: Request, res: Response, _next: Nex
 });
 
 const scheduleControllers = {
-  createSchedule
+    createSchedule
 };
 
 export default scheduleControllers;
