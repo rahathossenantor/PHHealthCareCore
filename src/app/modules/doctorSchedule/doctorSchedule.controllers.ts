@@ -16,8 +16,20 @@ const createDoctorSchedule = catchAsync(async (req: Request & { user?: TTokenPay
     });
 });
 
+const getAllDoctorSchedules = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+    const response = await doctorScheduleServices.getAllDoctorSchedulesFromDB();
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Doctor schedules fetched successfully.",
+        data: response
+    });
+});
+
 const doctorScheduleControllers = {
-    createDoctorSchedule
+    createDoctorSchedule,
+    getAllDoctorSchedules
 };
 
 export default doctorScheduleControllers;
