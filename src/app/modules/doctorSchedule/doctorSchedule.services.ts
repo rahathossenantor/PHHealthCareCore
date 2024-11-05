@@ -20,8 +20,14 @@ const createDoctorScheduleIntoDB = async (user: TTokenPayload, payload: { schedu
     return res;
 };
 
+const getAllDoctorSchedulesFromDB = async () => {
+    const schedules = prisma.doctorSchedule.findMany();
+    return schedules;
+};
+
 const doctorScheduleServices = {
-    createDoctorScheduleIntoDB
+    createDoctorScheduleIntoDB,
+    getAllDoctorSchedulesFromDB
 };
 
 export default doctorScheduleServices;
