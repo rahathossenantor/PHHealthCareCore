@@ -56,8 +56,14 @@ const createScheduleIntoDB = async (payload: any) => {
     return schedules;
 };
 
+const getAllSchedulesFromDB = async () => {
+    const schedules = await prisma.schedule.findMany();
+    return schedules;
+};
+
 const scheduleServices = {
-    createScheduleIntoDB
+    createScheduleIntoDB,
+    getAllSchedulesFromDB
 };
 
 export default scheduleServices;
