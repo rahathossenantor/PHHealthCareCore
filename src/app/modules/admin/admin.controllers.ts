@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import adminServices from "./admin.services";
 import pick from "../../utils/pick";
-import { adminFiltarableFields } from "./admin.constants";
+import { adminFilterableFields } from "./admin.constants";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import { filterAndPaginateOptions } from "../../constants/global.constants";
 
 const getAllAdmins = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const query = pick(req.query, adminFiltarableFields);
+    const query = pick(req.query, adminFilterableFields);
     const options = pick(req.query, filterAndPaginateOptions);
 
     const response = await adminServices.getAllAdminsFromDB(query, options);

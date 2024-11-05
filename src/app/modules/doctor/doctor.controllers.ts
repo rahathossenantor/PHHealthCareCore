@@ -4,11 +4,11 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import { filterAndPaginateOptions } from "../../constants/global.constants";
-import { doctorFiltarableFields } from "./doctor.constants";
+import { doctorFilterableFields } from "./doctor.constants";
 import doctorServices from "./doctor.services";
 
 const getAllDoctors = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const query = pick(req.query, doctorFiltarableFields);
+    const query = pick(req.query, doctorFilterableFields);
     const options = pick(req.query, filterAndPaginateOptions);
 
     const response = await doctorServices.getAllDoctorsFromDB(query, options);

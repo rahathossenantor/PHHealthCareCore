@@ -5,7 +5,7 @@ import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import pick from "../../utils/pick";
 import { filterAndPaginateOptions } from "../../constants/global.constants";
-import { userFiltarableFields } from "./user.constants";
+import { userFilterableFields } from "./user.constants";
 import { TTokenPayload } from "../../types/global.types";
 
 const createAdmin = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
@@ -39,7 +39,7 @@ const createPatient = catchAsync(async (req: Request, res: Response, _next: Next
 });
 
 const getAllUsers = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const query = pick(req.query, userFiltarableFields);
+    const query = pick(req.query, userFilterableFields);
     const options = pick(req.query, filterAndPaginateOptions);
 
     const response = await userServices.getAllUsersFromDB(query, options);

@@ -42,7 +42,7 @@ const getAllDoctorsFromDB = async (query: TDoctorSearchParams, options: Partial<
         });
     };
 
-    // search on seperate fields specifically
+    // search on separate fields specifically
     if (Object.keys(restFilterConditions).length) {
         filterConditions.push({
             AND: Object.keys(restFilterConditions).map(key => ({

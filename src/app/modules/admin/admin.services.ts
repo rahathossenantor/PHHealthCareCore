@@ -27,7 +27,7 @@ const getAllAdminsFromDB = async (query: TAdminSearchParams, options: Partial<TO
         });
     };
 
-    // search on seperate fields specifically
+    // search on separate fields specifically
     if (Object.keys(restFilterConditions).length) {
         filterConditions.push({
             AND: Object.keys(restFilterConditions).map(key => ({
