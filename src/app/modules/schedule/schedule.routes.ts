@@ -10,6 +10,11 @@ router.post(
     scheduleControllers.createSchedule
 );
 
+router.get(
+    "/",
+    scheduleControllers.getAllSchedules
+);
+
 const scheduleRoutes = router;
 
 export default scheduleRoutes;
