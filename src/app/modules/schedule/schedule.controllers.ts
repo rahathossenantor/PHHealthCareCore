@@ -5,6 +5,7 @@ import catchAsync from "../../utils/catchAsync";
 import scheduleServices from "./schedule.services";
 import pick from "../../utils/pick";
 import { filterAndPaginateOptions } from "../../constants/global.constants";
+import { TTokenPayload } from "../../types/global.types";
 
 const createSchedule = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
     const response = await scheduleServices.createScheduleIntoDB(req.body);
@@ -17,11 +18,11 @@ const createSchedule = catchAsync(async (req: Request, res: Response, _next: Nex
     });
 });
 
-const getAllSchedules = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+const getAllSchedules = catchAsync(async (req: Request & { user?: TTokenPayload }, res: Response, _next: NextFunction) => {
     const query = pick(req.query, ["startDateTime", "endDateTime"]);
     const options = pick(req.query, filterAndPaginateOptions);
 
-    const response = await scheduleServices.getAllSchedulesFromDB(query, options);
+    const response = await scheduleServices.getAllSchedulesFromDB(query, req.user as TTokenPayload, options);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
