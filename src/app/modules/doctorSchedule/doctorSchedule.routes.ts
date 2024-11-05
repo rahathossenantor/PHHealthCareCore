@@ -10,6 +10,11 @@ router.post(
     doctorScheduleControllers.createDoctorSchedule
 );
 
+router.get(
+    "/",
+    doctorScheduleControllers.getAllDoctorSchedules
+);
+
 const doctorScheduleRoutes = router;
 
 export default doctorScheduleRoutes;
