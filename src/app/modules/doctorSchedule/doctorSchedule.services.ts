@@ -7,9 +7,17 @@ const createDoctorScheduleIntoDB = async (user: TTokenPayload, payload: { schedu
             email: user.email
         }
     });
-    console.log(user);
-    console.log(doctor);
-    console.log(payload);
+
+    const schedules = payload.scheduleIds.map((scheduleId) => ({
+        doctorId: doctor.id,
+        scheduleId
+    }));
+
+    const res = await prisma.doctorSchedule.createMany({
+        data: schedules
+    });
+
+    return res;
 };
 
 const doctorScheduleServices = {
