@@ -16,6 +16,11 @@ router.get(
     scheduleControllers.getAllSchedules
 );
 
+router.get(
+    "/:id",
+    scheduleControllers.getSingleSchedule
+);
+
 const scheduleRoutes = router;
 
 export default scheduleRoutes;

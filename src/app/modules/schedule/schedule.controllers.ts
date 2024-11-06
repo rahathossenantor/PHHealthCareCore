@@ -32,9 +32,21 @@ const getAllSchedules = catchAsync(async (req: Request & { user?: TTokenPayload 
     });
 });
 
+const getSingleSchedule = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+    const response = await scheduleServices.getSingleScheduleFromDB(req.params.id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Schedule fetched successfully.",
+        data: response
+    });
+});
+
 const scheduleControllers = {
     createSchedule,
-    getAllSchedules
+    getAllSchedules,
+    getSingleSchedule
 };
 
 export default scheduleControllers;
