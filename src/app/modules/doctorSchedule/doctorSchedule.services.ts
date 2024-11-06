@@ -33,7 +33,7 @@ const getMySchedulesFromDB = async (query: any, user: TTokenPayload, options: Pa
 }> => {
     const filterConditions: Prisma.DoctorScheduleWhereInput[] = [];
     const { startDateTime, endDateTime, ...restFilterConditions } = query;
-    const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options as TOptions);
+    const { page, limit, skip } = paginateAndSortCalc(options as TOptions);
 
     if (startDateTime && endDateTime) {
         filterConditions.push({
@@ -58,6 +58,13 @@ const getMySchedulesFromDB = async (query: any, user: TTokenPayload, options: Pa
 
     // search on separate fields specifically
     if (Object.keys(restFilterConditions).length) {
+        const typeOfIsBooked = typeof restFilterConditions.isBooked === "string";
+        if (typeOfIsBooked && restFilterConditions.isBooked === "true") {
+            restFilterConditions.isBooked = true;
+        } else if (typeOfIsBooked && restFilterConditions.isBooked === "false") {
+            restFilterConditions.isBooked = false;
+        };
+
         filterConditions.push({
             AND: Object.keys(restFilterConditions).map(key => ({
                 [key]: {
@@ -71,11 +78,16 @@ const getMySchedulesFromDB = async (query: any, user: TTokenPayload, options: Pa
 
     const res = await prisma.doctorSchedule.findMany({
         where: whereConditions,
+        include: {
+            schedule: {
+                select: {
+                    startDateTime: true,
+                    endDateTime: true
+                }
+            }
+        },
         skip,
-        take: limit,
-        orderBy: {
-            [sortBy]: sortOrder
-        }
+        take: limit
     });
 
     const total = await prisma.doctorSchedule.count({

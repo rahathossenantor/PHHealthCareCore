@@ -15,6 +15,12 @@ router.get(
     doctorScheduleControllers.getAllDoctorSchedules
 );
 
+router.get(
+    "/my-schedules",
+    auth("DOCTOR"),
+    doctorScheduleControllers.getMySchedules
+);
+
 const doctorScheduleRoutes = router;
 
 export default doctorScheduleRoutes;

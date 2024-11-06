@@ -30,7 +30,7 @@ const getAllDoctorSchedules = catchAsync(async (req: Request, res: Response, _ne
 });
 
 const getMySchedules = catchAsync(async (req: Request & { user?: TTokenPayload }, res: Response, _next: NextFunction) => {
-    const query = pick(req.query, ["startDateTime", "endDateTime"]);
+    const query = pick(req.query, ["startDateTime", "endDateTime", "isBooked"]);
     const options = pick(req.query, filterAndPaginateOptions);
     const response = await doctorScheduleServices.getMySchedulesFromDB(query, req.user as TTokenPayload, options);
 
