@@ -2,6 +2,8 @@ import { DoctorSchedule, Prisma } from "@prisma/client";
 import { TMeta, TOptions, TTokenPayload } from "../../types/global.types";
 import prisma from "../../utils/prisma";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
 
 const createDoctorScheduleIntoDB = async (user: TTokenPayload, payload: { scheduleIds: string[] }) => {
     const doctor = await prisma.doctor.findUniqueOrThrow({
@@ -104,10 +106,44 @@ const getMySchedulesFromDB = async (query: any, user: TTokenPayload, options: Pa
     };
 };
 
+const deleteMyScheduleFromDB = async (user: TTokenPayload, scheduleId: string) => {
+    const doctor = await prisma.doctor.findUniqueOrThrow({
+        where: {
+            email: user.email
+        },
+        select: {
+            id: true
+        }
+    });
+
+    const isTheScheduleBooked = await prisma.doctorSchedule.findFirst({
+        where: {
+            scheduleId,
+            doctorId: doctor.id,
+            isBooked: true
+        }
+    });
+    if (isTheScheduleBooked) {
+        throw new AppError(httpStatus.BAD_REQUEST, "This schedule is already booked!");
+    };
+
+    const res = await prisma.doctorSchedule.delete({
+        where: {
+            doctorId_scheduleId: {
+                doctorId: doctor.id,
+                scheduleId
+            }
+        }
+    });
+
+    return res;
+};
+
 const doctorScheduleServices = {
     createDoctorScheduleIntoDB,
     getAllDoctorSchedulesFromDB,
-    getMySchedulesFromDB
+    getMySchedulesFromDB,
+    deleteMyScheduleFromDB
 };
 
 export default doctorScheduleServices;
