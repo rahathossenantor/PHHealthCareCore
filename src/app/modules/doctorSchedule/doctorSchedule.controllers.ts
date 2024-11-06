@@ -42,10 +42,22 @@ const getMySchedules = catchAsync(async (req: Request & { user?: TTokenPayload }
     });
 });
 
+const deleteMySchedule = catchAsync(async (req: Request & { user?: TTokenPayload }, res: Response, _next: NextFunction) => {
+    const response = await doctorScheduleServices.deleteMyScheduleFromDB(req.user as TTokenPayload, req.params.id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Doctor schedule deleted successfully.",
+        data: response
+    });
+});
+
 const doctorScheduleControllers = {
     createDoctorSchedule,
     getAllDoctorSchedules,
-    getMySchedules
+    getMySchedules,
+    deleteMySchedule
 };
 
 export default doctorScheduleControllers;
