@@ -140,9 +140,20 @@ const getAllSchedulesFromDB = async (query: any, user: TTokenPayload, options: P
     };
 };
 
+const getSingleScheduleFromDB = async (id: string) => {
+    const res = await prisma.schedule.findUnique({
+        where: {
+            id
+        }
+    });
+
+    return res;
+};
+
 const scheduleServices = {
     createScheduleIntoDB,
-    getAllSchedulesFromDB
+    getAllSchedulesFromDB,
+    getSingleScheduleFromDB
 };
 
 export default scheduleServices;
