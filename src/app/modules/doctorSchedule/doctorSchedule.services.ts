@@ -1,5 +1,7 @@
-import { TTokenPayload } from "../../types/global.types";
+import { DoctorSchedule, Prisma } from "@prisma/client";
+import { TMeta, TOptions, TTokenPayload } from "../../types/global.types";
 import prisma from "../../utils/prisma";
+import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 
 const createDoctorScheduleIntoDB = async (user: TTokenPayload, payload: { scheduleIds: string[] }) => {
     const doctor = await prisma.doctor.findUniqueOrThrow({
@@ -25,9 +27,75 @@ const getAllDoctorSchedulesFromDB = async () => {
     return schedules;
 };
 
+const getMySchedulesFromDB = async (query: any, user: TTokenPayload, options: Partial<TOptions>): Promise<{
+    meta: TMeta;
+    data: DoctorSchedule[];
+}> => {
+    const filterConditions: Prisma.DoctorScheduleWhereInput[] = [];
+    const { startDateTime, endDateTime, ...restFilterConditions } = query;
+    const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options as TOptions);
+
+    if (startDateTime && endDateTime) {
+        filterConditions.push({
+            AND: [
+                {
+                    schedule: {
+                        startDateTime: {
+                            gte: startDateTime
+                        }
+                    }
+                },
+                {
+                    schedule: {
+                        endDateTime: {
+                            lte: endDateTime
+                        }
+                    }
+                }
+            ]
+        });
+    };
+
+    // search on separate fields specifically
+    if (Object.keys(restFilterConditions).length) {
+        filterConditions.push({
+            AND: Object.keys(restFilterConditions).map(key => ({
+                [key]: {
+                    equals: (restFilterConditions as Record<string, any>)[key]
+                }
+            }))
+        });
+    };
+
+    const whereConditions: Prisma.DoctorScheduleWhereInput = filterConditions.length ? { AND: filterConditions } : {};
+
+    const res = await prisma.doctorSchedule.findMany({
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy: {
+            [sortBy]: sortOrder
+        }
+    });
+
+    const total = await prisma.doctorSchedule.count({
+        where: whereConditions
+    });
+
+    return {
+        meta: {
+            page,
+            limit,
+            total
+        },
+        data: res
+    };
+};
+
 const doctorScheduleServices = {
     createDoctorScheduleIntoDB,
-    getAllDoctorSchedulesFromDB
+    getAllDoctorSchedulesFromDB,
+    getMySchedulesFromDB
 };
 
 export default doctorScheduleServices;
