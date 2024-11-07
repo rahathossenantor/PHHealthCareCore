@@ -21,6 +21,11 @@ router.get(
     scheduleControllers.getSingleSchedule
 );
 
+router.delete(
+    "/:id",
+    scheduleControllers.deleteSchedule
+);
+
 const scheduleRoutes = router;
 
 export default scheduleRoutes;
