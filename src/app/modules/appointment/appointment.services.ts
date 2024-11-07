@@ -1,6 +1,8 @@
-import { TTokenPayload } from "../../types/global.types";
+import { Prisma } from "@prisma/client";
+import { TOptions, TTokenPayload } from "../../types/global.types";
 import prisma from "../../utils/prisma";
 import { v4 as uuidv4 } from "uuid";
+import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
 
 const createAppointmentIntoDB = async (user: TTokenPayload, payload: any) => {
     const patient = await prisma.patient.findUniqueOrThrow({
@@ -69,8 +71,73 @@ const createAppointmentIntoDB = async (user: TTokenPayload, payload: any) => {
     return res;
 };
 
+const getMyAppointmentsFromDB = async (user: TTokenPayload, filterOptions: any, options: Partial<TOptions>) => {
+    const filterConditions: Prisma.AppointmentWhereInput[] = [];
+    const { page, limit, skip, sortBy, sortOrder } = paginateAndSortCalc(options as TOptions);
+
+    if (user.role === "DOCTOR") {
+        filterConditions.push({
+            doctor: {
+                email: user.email
+            }
+        });
+    } else if (user.role === "PATIENT") {
+        filterConditions.push({
+            patient: {
+                email: user.email
+            }
+        });
+    };
+
+    // search on separate fields specifically
+    if (Object.keys(filterOptions).length) {
+        filterConditions.push({
+            AND: Object.keys(filterOptions).map(key => ({
+                [key]: {
+                    equals: (filterOptions as Record<string, any>)[key]
+                }
+            }))
+        });
+    };
+
+    const whereConditions: Prisma.AppointmentWhereInput = filterConditions.length ? { AND: filterConditions } : {};
+
+    const res = await prisma.appointment.findMany({
+        where: whereConditions,
+        skip,
+        take: limit,
+        orderBy: {
+            [sortBy]: sortOrder
+        },
+        include: user.role === "DOCTOR" ? {
+            patient: {
+                include: {
+                    medicalReport: true,
+                    patientHealth: true
+                }
+            }
+        } : {
+            doctor: true
+        }
+    });
+
+    const total = await prisma.appointment.count({
+        where: whereConditions
+    });
+
+    return {
+        meta: {
+            page,
+            limit,
+            total
+        },
+        data: res
+    };
+};
+
 const appointmentServices = {
-    createAppointmentIntoDB
+    createAppointmentIntoDB,
+    getMyAppointmentsFromDB
 };
 
 export default appointmentServices;
