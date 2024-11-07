@@ -42,6 +42,17 @@ const getMySchedules = catchAsync(async (req: Request & { user?: TTokenPayload }
     });
 });
 
+const getDoctorSchedules = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+    const response = await doctorScheduleServices.getDoctorSchedulesFromDB();
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Doctor schedules fetched successfully.",
+        data: response
+    });
+});
+
 const deleteMySchedule = catchAsync(async (req: Request & { user?: TTokenPayload }, res: Response, _next: NextFunction) => {
     const response = await doctorScheduleServices.deleteMyScheduleFromDB(req.user as TTokenPayload, req.params.id);
 
@@ -57,7 +68,8 @@ const doctorScheduleControllers = {
     createDoctorSchedule,
     getAllDoctorSchedules,
     getMySchedules,
-    deleteMySchedule
+    deleteMySchedule,
+    getDoctorSchedules
 };
 
 export default doctorScheduleControllers;
