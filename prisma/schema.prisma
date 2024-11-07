@@ -58,6 +58,7 @@ model Doctor {
   doctorSpecialty     DoctorSpecialty[]
   doctorSchedule      DoctorSchedule[]
   appointment         Appointment[]
+  prescription        Prescription[]
 
   @@map("doctors")
 }
@@ -76,6 +77,7 @@ model Patient {
   medicalReport MedicalReport[]
   patientHealth PatientHealth?
   appointment   Appointment[]
+  prescription  Prescription[]
 
   @@map("patients")
 }
@@ -177,6 +179,7 @@ model Appointment {
   updatedAt      DateTime          @updatedAt
   doctorSchedule DoctorSchedule?
   payment        Payment?
+  prescription   Prescription?
 
   @@map("appointments")
 }
@@ -193,6 +196,22 @@ model Payment {
   updatedAt      DateTime      @updatedAt
 
   @@map("payments")
+}
+
+model Prescription {
+  id            String      @id @default(uuid())
+  appointmentId String      @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  doctorId      String
+  doctor        Doctor      @relation(fields: [doctorId], references: [id])
+  patientId     String
+  patient       Patient     @relation(fields: [patientId], references: [id])
+  instructions  String
+  followUpDate  DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("prescriptions")
 }
 
 // enums
