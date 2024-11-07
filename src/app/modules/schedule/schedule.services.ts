@@ -150,10 +150,21 @@ const getSingleScheduleFromDB = async (id: string) => {
     return res;
 };
 
+const deleteScheduleFromDB = async (id: string) => {
+    const res = await prisma.schedule.delete({
+        where: {
+            id
+        }
+    });
+
+    return res;
+};
+
 const scheduleServices = {
     createScheduleIntoDB,
     getAllSchedulesFromDB,
-    getSingleScheduleFromDB
+    getSingleScheduleFromDB,
+    deleteScheduleFromDB
 };
 
 export default scheduleServices;
