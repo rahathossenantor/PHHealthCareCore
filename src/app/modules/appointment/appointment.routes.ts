@@ -10,6 +10,12 @@ router.post(
     appointmentControllers.createAppointment
 );
 
+router.get(
+    "/my-appointments",
+    auth("DOCTOR", "PATIENT"),
+    appointmentControllers.getMyAppointments
+);
+
 const appointmentRoutes = router;
 
 export default appointmentRoutes;
