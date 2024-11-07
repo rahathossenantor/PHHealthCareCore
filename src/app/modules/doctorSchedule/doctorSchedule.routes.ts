@@ -22,6 +22,11 @@ router.get(
 );
 
 router.get(
+    "/doctor-schedules",
+    doctorScheduleControllers.getDoctorSchedules
+);
+
+router.get(
     "/:id",
     auth("DOCTOR"),
     doctorScheduleControllers.deleteMySchedule
