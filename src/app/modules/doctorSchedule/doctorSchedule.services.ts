@@ -106,6 +106,16 @@ const getMySchedulesFromDB = async (query: any, user: TTokenPayload, options: Pa
     };
 };
 
+const getDoctorSchedulesFromDB = async () => {
+    const doctorSchedules = await prisma.doctorSchedule.findMany({
+        include: {
+            schedule: true
+        }
+    });
+
+    return doctorSchedules;
+};
+
 const deleteMyScheduleFromDB = async (user: TTokenPayload, scheduleId: string) => {
     const doctor = await prisma.doctor.findUniqueOrThrow({
         where: {
@@ -143,7 +153,8 @@ const doctorScheduleServices = {
     createDoctorScheduleIntoDB,
     getAllDoctorSchedulesFromDB,
     getMySchedulesFromDB,
-    deleteMyScheduleFromDB
+    deleteMyScheduleFromDB,
+    getDoctorSchedulesFromDB
 };
 
 export default doctorScheduleServices;
