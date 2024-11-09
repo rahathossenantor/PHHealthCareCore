@@ -1,6 +1,8 @@
 import axios from "axios";
 import config from "../../config";
 import prisma from "../../utils/prisma";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
 
 const initializePayment = async (appointmentId: string) => {
     const paymentData = await prisma.payment.findUniqueOrThrow({
@@ -61,8 +63,20 @@ const initializePayment = async (appointmentId: string) => {
     };
 };
 
+const validatePayment = async (query: any) => {
+    if (!query || !query.status || query.status !== "VALID") {
+        throw new AppError(httpStatus.BAD_REQUEST, "Payment failed!");
+    };
+
+    const res = await axios({
+        method: "GET",
+        url: `${config.ssl_validation_api}?val_id=${query.val_id}&store_id=${config.ssl_store_id}&store_passwd=${config.ssl_store_pass}&format=json`,
+    });
+};
+
 const paymentServices = {
-    initializePayment
+    initializePayment,
+    validatePayment
 };
 
 export default paymentServices;
