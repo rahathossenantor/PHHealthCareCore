@@ -72,6 +72,31 @@ const validatePayment = async (query: any) => {
         method: "GET",
         url: `${config.ssl_validation_api}?val_id=${query.val_id}&store_id=${config.ssl_store_id}&store_passwd=${config.ssl_store_pass}&format=json`,
     });
+
+    if (res.data.status !== "VALID") {
+        throw new AppError(httpStatus.BAD_REQUEST, "Payment failed!");
+    };
+
+    await prisma.$transaction(async (transactionClient) => {
+        const payment = await transactionClient.payment.update({
+            where: {
+                transactionId: res.data.tran_id
+            },
+            data: {
+                status: "PAID",
+                paymentGateway: res.data
+            }
+        });
+
+        await transactionClient.appointment.update({
+            where: {
+                id: payment.appointmentId
+            },
+            data: {
+                paymentStatus: "PAID"
+            }
+        });
+    });
 };
 
 const paymentServices = {
