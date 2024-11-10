@@ -15,8 +15,20 @@ const initializePayment = catchAsync(async (req: Request, res: Response, _next: 
     });
 });
 
+const validatePayment = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
+    const response = await paymentServices.validatePayment(req.query);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Payment validated successfully.",
+        data: response
+    });
+});
+
 const paymentControllers = {
-    initializePayment
+    initializePayment,
+    validatePayment
 };
 
 export default paymentControllers;
