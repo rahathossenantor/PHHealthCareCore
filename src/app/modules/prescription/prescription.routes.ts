@@ -10,6 +10,12 @@ router.get(
     prescriptionControllers.createPrescription
 );
 
+router.get(
+    "/my-prescription",
+    auth("PATIENT"),
+    prescriptionControllers.getMyPrescriptions
+);
+
 const prescriptionRoutes = router;
 
 export default prescriptionRoutes;
