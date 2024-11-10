@@ -32,8 +32,8 @@ const getMyAppointments = catchAsync(async (req: Request & { user?: TTokenPayloa
     });
 });
 
-const changeAppointmentStatus = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const response = await appointmentServices.changeAppointmentStatus(req.params.id, req.body);
+const changeAppointmentStatus = catchAsync(async (req: Request & { user?: TTokenPayload }, res: Response, _next: NextFunction) => {
+    const response = await appointmentServices.changeAppointmentStatus(req.user as TTokenPayload, req.params.id, req.body);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,

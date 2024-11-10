@@ -6,6 +6,8 @@ import notFound from "./app/middlewares/notFound";
 import cookieParser from "cookie-parser";
 import sendResponse from "./app/utils/sendResponse";
 import httpStatus from "http-status";
+import appointmentServices from "./app/modules/appointment/appointment.services";
+import cron from "node-cron";
 
 const app: Application = express();
 
@@ -21,6 +23,10 @@ app.use("/api/v1", router);
 // middlewares
 app.use(globalErrorHandler);
 app.use(notFound);
+
+cron.schedule("* * * * *", async () => {
+    appointmentServices.cancelUnpaidAppointments();
+});
 
 app.get("/", (_req: Request, res: Response) => {
     sendResponse(res, {

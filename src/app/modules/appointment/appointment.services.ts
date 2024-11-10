@@ -3,6 +3,8 @@ import { TOptions, TTokenPayload } from "../../types/global.types";
 import prisma from "../../utils/prisma";
 import { v4 as uuidv4 } from "uuid";
 import paginateAndSortCalc from "../../utils/paginateAndSortCalc";
+import AppError from "../../errors/AppError";
+import httpStatus from "http-status";
 
 const createAppointmentIntoDB = async (user: TTokenPayload, payload: any) => {
     const patient = await prisma.patient.findUniqueOrThrow({
@@ -135,12 +137,21 @@ const getMyAppointmentsFromDB = async (user: TTokenPayload, filterOptions: any, 
     };
 };
 
-const changeAppointmentStatus = async (id: string, payload: { status: AppointmentStatus }) => {
-    await prisma.appointment.findUniqueOrThrow({
+const changeAppointmentStatus = async (user: TTokenPayload, id: string, payload: { status: AppointmentStatus }) => {
+    const appointment = await prisma.appointment.findUniqueOrThrow({
         where: {
             id
+        },
+        include: {
+            doctor: true
         }
     });
+
+    if (user.role === "DOCTOR") {
+        if (appointment.doctor.email !== user.email) {
+            throw new AppError(httpStatus.FORBIDDEN, "You're not allowed to access this resource!");
+        };
+    };
 
     const res = await prisma.appointment.update({
         where: {
@@ -152,10 +163,56 @@ const changeAppointmentStatus = async (id: string, payload: { status: Appointmen
     return res;
 };
 
+const cancelUnpaidAppointments = async () => {
+    const thirtyMinutesTime = new Date(Date.now() - 30 * 60 * 1000);
+
+    const appointments = await prisma.appointment.findMany({
+        where: {
+            createdAt: {
+                lte: thirtyMinutesTime
+            },
+            paymentStatus: "UNPAID"
+        }
+    });
+
+    const appointmentIds = appointments.map((appointment) => appointment.id);
+
+    await prisma.$transaction(async (transactionClient) => {
+        await transactionClient.payment.deleteMany({
+            where: {
+                appointmentId: {
+                    in: appointmentIds
+                }
+            }
+        });
+
+        await transactionClient.appointment.deleteMany({
+            where: {
+                id: {
+                    in: appointmentIds
+                }
+            }
+        });
+
+        for (const appointment of appointments) {
+            await transactionClient.doctorSchedule.updateMany({
+                where: {
+                    doctorId: appointment.doctorId,
+                    scheduleId: appointment.scheduleId
+                },
+                data: {
+                    isBooked: false
+                }
+            });
+        };
+    });
+};
+
 const appointmentServices = {
     createAppointmentIntoDB,
     getMyAppointmentsFromDB,
-    changeAppointmentStatus
+    changeAppointmentStatus,
+    cancelUnpaidAppointments
 };
 
 export default appointmentServices;
