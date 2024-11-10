@@ -16,6 +16,11 @@ router.get(
     appointmentControllers.getMyAppointments
 );
 
+router.patch(
+    "/status/:id",
+    appointmentControllers.changeAppointmentStatus
+);
+
 const appointmentRoutes = router;
 
 export default appointmentRoutes;
