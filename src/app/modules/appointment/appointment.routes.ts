@@ -18,6 +18,7 @@ router.get(
 
 router.patch(
     "/status/:id",
+    auth("SUPER_ADMIN", "ADMIN", "DOCTOR"),
     appointmentControllers.changeAppointmentStatus
 );
 
