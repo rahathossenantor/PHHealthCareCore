@@ -30,7 +30,7 @@ const createPrescriptionIntoDB = async (user: TTokenPayload, payload: any) => {
     return res;
 };
 
-const getMyPrescriptions = async (user: TTokenPayload) => {
+const getMyPrescriptionsFromDB = async (user: TTokenPayload) => {
     const prescriptions = await prisma.prescription.findMany({
         where: {
             patient: {
@@ -44,7 +44,7 @@ const getMyPrescriptions = async (user: TTokenPayload) => {
 
 const prescriptionServices = {
     createPrescriptionIntoDB,
-    getMyPrescriptions
+    getMyPrescriptionsFromDB
 };
 
 export default prescriptionServices;
