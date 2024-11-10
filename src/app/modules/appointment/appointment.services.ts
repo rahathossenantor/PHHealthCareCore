@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { AppointmentStatus, Prisma } from "@prisma/client";
 import { TOptions, TTokenPayload } from "../../types/global.types";
 import prisma from "../../utils/prisma";
 import { v4 as uuidv4 } from "uuid";
@@ -135,9 +135,27 @@ const getMyAppointmentsFromDB = async (user: TTokenPayload, filterOptions: any, 
     };
 };
 
+const changeAppointmentStatus = async (id: string, payload: { status: AppointmentStatus }) => {
+    await prisma.appointment.findUniqueOrThrow({
+        where: {
+            id
+        }
+    });
+
+    const res = await prisma.appointment.update({
+        where: {
+            id
+        },
+        data: payload
+    });
+
+    return res;
+};
+
 const appointmentServices = {
     createAppointmentIntoDB,
-    getMyAppointmentsFromDB
+    getMyAppointmentsFromDB,
+    changeAppointmentStatus
 };
 
 export default appointmentServices;
