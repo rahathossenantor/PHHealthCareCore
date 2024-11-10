@@ -8,6 +8,11 @@ router.get(
     paymentControllers.initializePayment
 );
 
+router.get(
+    "/apn",
+    paymentControllers.validatePayment
+);
+
 const paymentRoutes = router;
 
 export default paymentRoutes;
