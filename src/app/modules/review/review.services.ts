@@ -20,17 +20,39 @@ const createReviewIntoDB = async (user: TTokenPayload, payload: any) => {
         throw new AppError(httpStatus.FORBIDDEN, "You're not allowed to access this resource!");
     };
 
-    const review = await prisma.review.create({
-        data: {
-            appointmentId: appointment.id,
-            doctorId: appointment.doctorId,
-            patientId: patient.id,
-            rating: payload.rating,
-            comment: payload.comment
-        }
+    const res = await prisma.$transaction(async (transactionClient) => {
+        const review = await transactionClient.review.create({
+            data: {
+                appointmentId: appointment.id,
+                doctorId: appointment.doctorId,
+                patientId: patient.id,
+                rating: payload.rating,
+                comment: payload.comment
+            }
+        });
+
+        const avgRating = await transactionClient.review.aggregate({
+            where: {
+                id: appointment.doctorId
+            },
+            _avg: {
+                rating: true
+            }
+        });
+
+        await transactionClient.doctor.update({
+            where: {
+                id: appointment.doctorId
+            },
+            data: {
+                avgRating: avgRating._avg.rating as number
+            }
+        });
+
+        return review;
     });
 
-    return review;
+    return res;
 };
 
 const reviewServices = {
