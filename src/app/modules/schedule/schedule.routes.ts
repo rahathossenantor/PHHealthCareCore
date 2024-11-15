@@ -23,6 +23,7 @@ router.get(
 
 router.delete(
     "/:id",
+    auth("SUPER_ADMIN", "ADMIN"),
     scheduleControllers.deleteSchedule
 );
 

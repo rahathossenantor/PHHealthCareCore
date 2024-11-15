@@ -24,6 +24,7 @@ router.patch(
 
 router.delete(
     "/:id",
+    auth("SUPER_ADMIN", "ADMIN", "PATIENT"),
     patientControllers.deletePatient
 );
 

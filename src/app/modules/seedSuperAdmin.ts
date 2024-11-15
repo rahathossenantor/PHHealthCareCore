@@ -1,3 +1,4 @@
+import config from "../config";
 import hashPassword from "../utils/hashPassword";
 import prisma from "../utils/prisma";
 
@@ -10,14 +11,14 @@ const seedSuperAdmin = async () => {
         });
 
         if (superAdmin) {
-            console.log("Super Admin already exists!");
+            console.log("Super admin already exists!");
             return;
         };
 
         await prisma.user.create({
             data: {
-                email: "superadmin@email.com",
-                password: await hashPassword("superadmin"),
+                email: "rahathossen.dev@gmail.com",
+                password: await hashPassword(config.default_pass as string),
                 role: "SUPER_ADMIN",
                 admin: {
                     create: {
