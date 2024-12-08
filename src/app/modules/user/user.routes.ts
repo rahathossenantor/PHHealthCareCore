@@ -21,34 +21,34 @@ router.get(
 
 router.post(
     "/create-admin",
-    auth("SUPER_ADMIN", "ADMIN"),
-    // upload.single("file"),
-    // (req: Request, _res: Response, next: NextFunction) => {
-    //     req.body = JSON.parse(req.body.data);
-    //     next();
-    // },
+    // auth("SUPER_ADMIN", "ADMIN"),
+    upload.single("file"),
+    (req: Request, _res: Response, next: NextFunction) => {
+        req.body = JSON.parse(req.body.data);
+        next();
+    },
     userControllers.createAdmin
 );
 
 router.post(
     "/create-doctor",
-    auth("SUPER_ADMIN", "ADMIN"),
-    // upload.single("file"),
-    // (req: Request, _res: Response, next: NextFunction) => {
-    //     req.body = JSON.parse(req.body.data);
-    //     next();
-    // },
+    // auth("SUPER_ADMIN", "ADMIN"),
+    upload.single("file"),
+    (req: Request, _res: Response, next: NextFunction) => {
+        req.body = JSON.parse(req.body.data);
+        next();
+    },
     requestValidator(userValidations.doctorCreateSchema),
     userControllers.createDoctor
 );
 
 router.post(
     "/create-patient",
-    // upload.single("file"),
-    // (req: Request, _res: Response, next: NextFunction) => {
-    //     req.body = JSON.parse(req.body.data);
-    //     next();
-    // },
+    upload.single("file"),
+    (req: Request, _res: Response, next: NextFunction) => {
+        req.body = JSON.parse(req.body.data);
+        next();
+    },
     requestValidator(userValidations.patientCreateSchema),
     userControllers.createPatient
 );

@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "main": "./dist/server.js",
   "scripts": {
+    "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./dist/server.js",
     "migrate": "npx prisma migrate dev",
     "studio": "npx prisma studio",
     "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
     "seed": "ts-node-dev --respawn --transpile-only ./src/app/modules/seedSuperAdmin.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "deploy": "tsc && vercel --prod"
   },
   "keywords": [],
   "author": "Md Rahat Hossen Antor",
