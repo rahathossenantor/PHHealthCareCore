@@ -10,6 +10,11 @@ router.get(
     doctorControllers.getAllDoctors
 );
 
+router.get(
+    "/:id",
+    doctorControllers.getSingleDoctor
+);
+
 router.patch(
     "/:id",
     auth("SUPER_ADMIN", "ADMIN"),
