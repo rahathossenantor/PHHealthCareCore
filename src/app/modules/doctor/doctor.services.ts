@@ -184,6 +184,7 @@ const deleteDoctorFromDB = async (id: string): Promise<Doctor> => {
 
 const doctorServices = {
     getAllDoctorsFromDB,
+    getSingleDoctorFromDB,
     deleteDoctorFromDB,
     updateDoctorIntoDB
 };
