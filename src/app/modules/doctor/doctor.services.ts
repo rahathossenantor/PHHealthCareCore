@@ -83,6 +83,16 @@ const getAllDoctorsFromDB = async (query: TDoctorSearchParams, options: Partial<
     };
 };
 
+const getSingleDoctorFromDB = async (id: string): Promise<Doctor | null> => {
+    const doctor = await prisma.doctor.findUniqueOrThrow({
+        where: {
+            id,
+            isDeleted: false
+        }
+    });
+    return doctor;
+};
+
 const updateDoctorIntoDB = async (id: string, payload: any) => {
     const { specialties, ...doctorsData } = payload;
 

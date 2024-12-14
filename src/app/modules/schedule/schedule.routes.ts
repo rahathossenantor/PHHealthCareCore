@@ -12,7 +12,7 @@ router.post(
 
 router.get(
     "/",
-    auth("DOCTOR"),
+    auth("ADMIN", "DOCTOR"),
     scheduleControllers.getAllSchedules
 );
 
