@@ -87,7 +87,14 @@ const getSingleDoctorFromDB = async (id: string): Promise<Doctor | null> => {
     const doctor = await prisma.doctor.findUniqueOrThrow({
         where: {
             id,
-            isDeleted: false
+            isDeleted: false,
+        },
+        include: {
+            doctorSpecialty: {
+                select: {
+                    specialty: true
+                }
+            }
         }
     });
     return doctor;
