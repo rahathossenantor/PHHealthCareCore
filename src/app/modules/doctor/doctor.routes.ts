@@ -6,7 +6,7 @@ const router = Router();
 
 router.get(
     "/",
-    // auth("SUPER_ADMIN", "ADMIN"),
+    auth("SUPER_ADMIN", "ADMIN"),
     doctorControllers.getAllDoctors
 );
 
@@ -17,7 +17,7 @@ router.get(
 
 router.patch(
     "/:id",
-    auth("SUPER_ADMIN", "ADMIN"),
+    auth("SUPER_ADMIN", "ADMIN", "DOCTOR"),
     doctorControllers.updateDoctor
 );
 

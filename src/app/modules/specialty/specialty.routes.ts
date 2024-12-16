@@ -7,13 +7,12 @@ const router = Router();
 
 router.get(
     "/",
-    // auth("SUPER_ADMIN", "ADMIN", "DOCTOR"),
     specialtyControllers.getAllSpecialties
 );
 
 router.post(
     "/create-specialty",
-    // auth("SUPER_ADMIN", "ADMIN"),
+    auth("SUPER_ADMIN", "ADMIN"),
     upload.single("file"),
     (req: Request, _res: Response, next: NextFunction) => {
         req.body = JSON.parse(req.body.data);
