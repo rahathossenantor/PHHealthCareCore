@@ -106,14 +106,27 @@ const getMySchedulesFromDB = async (query: any, user: TTokenPayload, options: Pa
     };
 };
 
-const getDoctorSchedulesFromDB = async () => {
+const getDoctorSchedulesFromDB = async (options: Partial<TOptions>) => {
+    const { page, limit, skip } = paginateAndSortCalc(options as TOptions);
+
     const doctorSchedules = await prisma.doctorSchedule.findMany({
         include: {
             schedule: true
-        }
+        },
+        skip,
+        take: limit
     });
 
-    return doctorSchedules;
+    const total = await prisma.doctorSchedule.count();
+
+    return {
+        meta: {
+            page,
+            limit,
+            total
+        },
+        data: doctorSchedules
+    };
 };
 
 const deleteMyScheduleFromDB = async (user: TTokenPayload, scheduleId: string) => {

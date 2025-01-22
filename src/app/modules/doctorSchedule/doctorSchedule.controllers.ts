@@ -43,7 +43,8 @@ const getMySchedules = catchAsync(async (req: Request & { user?: TTokenPayload }
 });
 
 const getDoctorSchedules = catchAsync(async (req: Request, res: Response, _next: NextFunction) => {
-    const response = await doctorScheduleServices.getDoctorSchedulesFromDB();
+    const options = pick(req.query, filterAndPaginateOptions);
+    const response = await doctorScheduleServices.getDoctorSchedulesFromDB(options);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
