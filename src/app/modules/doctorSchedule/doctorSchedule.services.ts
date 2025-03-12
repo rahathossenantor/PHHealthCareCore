@@ -106,10 +106,40 @@ const getMySchedulesFromDB = async (query: any, user: TTokenPayload, options: Pa
     };
 };
 
-const getDoctorSchedulesFromDB = async (options: Partial<TOptions>) => {
+const getDoctorSchedulesFromDB = async (query: any, options: Partial<TOptions>) => {
+    const filterConditions: Prisma.DoctorScheduleWhereInput[] = [];
+    const { startDateTime, endDateTime } = query;
     const { page, limit, skip } = paginateAndSortCalc(options as TOptions);
 
+    filterConditions.push({
+        doctorId: query.doctorId
+    });
+
+    if (startDateTime && endDateTime) {
+        filterConditions.push({
+            AND: [
+                {
+                    schedule: {
+                        startDateTime: {
+                            gte: startDateTime
+                        }
+                    }
+                },
+                {
+                    schedule: {
+                        endDateTime: {
+                            lte: endDateTime
+                        }
+                    }
+                }
+            ]
+        });
+    };
+
+    const whereConditions: Prisma.DoctorScheduleWhereInput = filterConditions.length ? { AND: filterConditions } : {};
+
     const doctorSchedules = await prisma.doctorSchedule.findMany({
+        where: whereConditions,
         include: {
             schedule: true
         },

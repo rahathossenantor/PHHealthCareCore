@@ -111,16 +111,20 @@ const getMyAppointmentsFromDB = async (user: TTokenPayload, filterOptions: any, 
         orderBy: {
             [sortBy]: sortOrder
         },
-        include: user.role === "DOCTOR" ? {
-            patient: {
-                include: {
-                    medicalReport: true,
-                    patientHealth: true
-                }
+        include: user.role === "DOCTOR"
+            ? {
+                patient: {
+                    include: {
+                        medicalReport: true,
+                        patientHealth: true
+                    }
+                },
+                schedule: true
             }
-        } : {
-            doctor: true
-        }
+            : {
+                doctor: true,
+                schedule: true
+            }
     });
 
     const total = await prisma.appointment.count({

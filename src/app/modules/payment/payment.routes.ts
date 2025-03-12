@@ -3,7 +3,7 @@ import paymentControllers from "./payment.controllers";
 
 const router = Router();
 
-router.get(
+router.post(
     "/initialize-payment/:id",
     paymentControllers.initializePayment
 );
